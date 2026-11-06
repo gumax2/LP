@@ -2,7 +2,7 @@
 
 ## 1. Relatório de testes do protótipo (06/11/2026)
 
-### Testes funcionais automatizados: 73 de 73 aprovados
+### Testes funcionais automatizados: 95 de 95 aprovados
 Script: `tools/testes/funcional.cjs` (Playwright + Chromium).
 
 | Área | O que foi verificado |
@@ -19,21 +19,26 @@ Script: `tools/testes/funcional.cjs` (Playwright + Chromium).
 | Eventos | `view_plans`, `select_tvs`, `begin_checkout`, `whatsapp_click`, `referral_click`, `faq_open`, `filtro_vitrine`, `rail_nav` |
 | Acessibilidade | Primeiro Tab = “Pular para o conteúdo”; menu fecha com Esc; movimento reduzido para a parede e as revelações |
 | Canais em destaque | Só espaços de exemplo no protótipo (nenhum canal real); filtro por categoria |
+| Opção B | Sem capas de exemplo no site: hero com ilustração própria, vitrines e aviso de exemplo ocultos; botão do protótipo mostra os carrosséis preservados (selo “Exemplo”) |
+| Contratação | Resumo antes do pagamento com plano e valor certos, pedido de comprovante, aviso de demora e Mercado Pago; Esc cancela; “Ir para o pagamento” segue ao checkout (desativado no protótipo) |
+| Atendimento | Comercial e suporte com mensagens próprias (comprovante, instalação, acesso, app, indicação); aviso sobre o tempo de resposta |
+| Página obrigado.html | Não indexável; botão de comprovante; aviso de demora; sem erros |
 | Samsung Internet | Emulação de user-agent e viewport de 360 px (motor Chromium) |
 
-### Fluxo de materiais oficiais: 15 de 15 aprovados
+### Fluxo de materiais oficiais: 26 de 26 aprovados
 Script: `tools/testes/materiais-oficiais.mjs` (cópia temporária do site, imagens geradas no teste).
 Otimização em AVIF/WebP/JPG; o navegador escolhe AVIF via `srcset`; proporção original preservada;
-itens sem licença, vencidos ou não disponíveis no serviço ficam ocultos; o validador bloqueia a publicação.
+itens sem licença, vencidos ou não disponíveis no serviço ficam ocultos; o validador bloqueia a publicação;
+opção B respeita o mínimo de títulos; importação pela planilha aceita/rejeita corretamente e não publica o texto do documento de autorização.
 
 ### Lighthouse 12 (servidor local sem compressão nem cache)
 | | Desempenho | Acessibilidade | Boas práticas | SEO |
 |---|---|---|---|---|
-| Celular (4G simulado) | 94–98 | 100 | 100 | 66* |
-| Computador | 100 | 100 | 100 | 66* |
+| Celular (4G simulado) | 94–97 | 100 | 100 | 63* |
+| Computador | 100 | 100 | 100 | 63* |
 
-Celular: FCP 1,5–1,7 s · LCP 2,3–2,9 s · TBT 40–80 ms · CLS 0–0,024 · peso total 381 KiB (com as 24 capas demonstrativas em SVG).
-\* SEO 66 por causa do `noindex` proposital do protótipo. Sem ele, a auditoria de indexação passa.
+Celular (opção B): FCP 1,8–2,0 s · LCP 2,4–2,6 s · TBT 40–150 ms · CLS 0 · peso total 261 KiB. Todas as animações são compostas pela GPU (opacidade/transform).
+\* SEO 63 por causa do `noindex` proposital do protótipo. Sem ele, a auditoria de indexação passa.
 Os alertas de compressão e cache vêm do servidor de teste e são resolvidos pelos cabeçalhos da seção 4.
 
 ### Limitações (não executado)

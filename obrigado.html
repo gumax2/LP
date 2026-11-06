@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>GMAX | Envie seu comprovante</title>
+  <meta name="description" content="Envie o comprovante de pagamento pelo WhatsApp para a GMAX dar sequência ao seu acesso.">
+  <meta name="theme-color" content="#060d1c">
+  <!-- Página de retorno após o pagamento: nunca indexar -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="data/config.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+  <!--
+    USO: só depois de aprovado, configurar esta página como URL de retorno
+    ("back_url"/"success") no Mercado Pago. Isso é uma alteração na integração
+    de pagamento e exige autorização expressa da GMAX.
+    Esta página NÃO confirma pagamento: ela apenas orienta o envio do comprovante.
+  -->
+</head>
+<body class="page-thanks">
+  <main class="thanks">
+    <div class="wrap thanks__in">
+      <p class="thanks__brand"><span class="brand__word">GMAX</span><span class="brand__sub">Canais, Filmes e Séries</span></p>
+      <span class="thanks__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+      <h1 class="thanks__t">Pedido enviado. Falta só um passo.</h1>
+      <p class="thanks__lead">Envie o <strong>comprovante de pagamento</strong> pelo WhatsApp <span class="nowrap" data-wa-exibicao>(31) 99002-9545</span>. Nossa equipe confere e responde com as orientações de acesso.</p>
+      <button class="btn btn--primary btn--lg" type="button" data-wa="Olá! Acabei de pagar meu plano GMAX e vou enviar o comprovante de pagamento." data-origem="pagina_obrigado" data-track-extra="receipt_click">
+        Enviar comprovante pelo WhatsApp
+      </button>
+      <ol class="thanks__steps">
+        <li><b>1</b><span>Toque no botão e anexe o comprovante (imagem ou PDF) na conversa.</span></li>
+        <li><b>2</b><span>Aguarde nossa resposta com as orientações de acesso e instalação.</span></li>
+      </ol>
+      <div class="notice" role="note">
+        <svg class="ico notice__ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        <p><strong>Aviso sobre o tempo de resposta.</strong> O atendimento é feito pela nossa equipe e, em horários de maior movimento, a resposta pode demorar. Envie o comprovante uma única vez e aguarde o nosso retorno.</p>
+      </div>
+      <a class="thanks__back" href="index.html">Voltar para a página inicial</a>
+    </div>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

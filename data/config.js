@@ -38,9 +38,16 @@ window.GMAX_CONFIG = Object.freeze({
    * Opção B de docs/MATERIAIS.md = { permitirDemonstrativas: false, minimoTitulos: 8 }.
    */
   vitrines: {
-    permitirDemonstrativas: true,
-    minimoTitulos: 6,
+    permitirDemonstrativas: false, // opção B aprovada em 06/11/2026
+    minimoTitulos: 8,
   },
+
+  /*
+   * Antes de ir ao Mercado Pago, mostra o resumo do plano e avisa que o cliente
+   * deve enviar o comprovante pelo WhatsApp e que o atendimento pode demorar.
+   * false → o botão "Assinar" vai direto ao checkout.
+   */
+  confirmarAntesDoCheckout: true,
 
   /* Medição: só dispara depois do consentimento do visitante (LGPD). */
   analytics: {

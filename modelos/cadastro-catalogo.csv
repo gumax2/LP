@@ -1,0 +1,4 @@
+tipo;id;titulo;genero_ou_categoria;arquivo;titular_do_direito;tipo_de_licenca;documento_de_autorizacao;valido_ate;disponivel_no_servico;observacoes
+filme;exemplo-filme;EXEMPLO: Nome oficial do filme;Drama;exemplo-filme.jpg;Distribuidora que autorizou;contrato-distribuicao;Contrato 2026/014 - cláusula de marketing;2027-06-30;sim;Linhas com id iniciado por exemplo- são ignoradas
+serie;exemplo-serie;EXEMPLO: Nome oficial da série;Suspense;exemplo-serie.jpg;Estúdio que autorizou;autorizacao-escrita;E-mail de fulano@estudio.com em 10/11/2026;;sim;valido_ate vazio = sem data de término
+canal;exemplo-canal;EXEMPLO: Nome oficial do canal;esportes;exemplo-canal.svg;Programadora do canal;kit-divulgacao;Manual de marca recebido em 12/11/2026;2027-12-31;sim;categoria: esportes, noticias, filmes, series, infantil, entretenimento ou documentarios

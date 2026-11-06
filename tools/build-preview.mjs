@@ -20,7 +20,7 @@ const dataUri = (p, mime) => `data:${mime};base64,${readFileSync(join(raiz, p)).
 
 let css = ler("assets/css/main.css").replace(/url\("\.\.\/fonts\/([^"]+)"\)/g, (_, f) => `url("${dataUri("assets/fonts/" + f, "font/woff2")}")`);
 let catalogo = ler("data/catalogo.js").replace(/"(assets\/img\/catalogo\/[^"]+\.svg)"/g, (_, p) => `"${dataUri(p, "image/svg+xml")}"`);
-const scripts = [ler("data/config.js"), ler("data/planos.js"), catalogo, ler("data/avaliacoes.js"), ler("assets/js/app.js")]
+const scripts = [ler("data/config.js"), ler("data/planos.js"), catalogo, ler("data/catalogo-oficial.js"), ler("data/avaliacoes.js"), ler("assets/js/app.js")]
   .map((s) => `<script>\n${s.replace(/<\/script/gi, () => "<\\/script")}\n</script>`).join("\n");
 
 let html = ler("index.html")

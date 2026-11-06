@@ -1,4 +1,4 @@
-# GMAX — Landing page (protótipo · versão 2)
+# GMAX — Landing page (protótipo · versão 4)
 
 Protótipo navegável e responsivo da nova landing page da GMAX.
 **Independente do site em produção**: não contém checkout, credenciais, webhooks nem URLs comerciais ativas.
@@ -23,7 +23,8 @@ node tools/build-preview.mjs       # dist/gmax-prototipo.html
 Materiais oficiais (pôsteres e logotipos autorizados), ver `docs/MATERIAIS.md`:
 ```bash
 npm install                        # uma vez (instala o otimizador de imagens)
-npm run imagens                    # AVIF/WebP/JPG a partir de materiais/recebidos/
+cp modelos/cadastro-catalogo.csv materiais/cadastro.csv   # preencher a planilha
+npm run importar                   # valida licenças, otimiza imagens, gera data/catalogo-oficial.js
 npm run validar                    # bloqueia item sem licença, vencido ou ausente
 ```
 
@@ -37,13 +38,16 @@ node tools/testes/materiais-oficiais.mjs   # fluxo de materiais oficiais (cópia
 
 ```
 index.html                 página (HTML semântico, SEO, CSP)
+obrigado.html              retorno após o pagamento: pede o comprovante (uso opcional, exige aprovação)
 assets/css/main.css        design system (tokens) + componentes, sem dependências
 assets/js/app.js           comportamento (~24 KB sem compressão, JS puro, sem framework)
 assets/fonts/              Sora e Inter hospedadas localmente (licença OFL)
 assets/img/catalogo/       capas ilustrativas originais (SVG, geradas por código)
 data/config.js             modo protótipo, WhatsApp, Play Store, links de checkout (vazio)
 data/planos.js             tabela comercial: fonte única dos preços
-data/catalogo.js           filmes, séries e categorias das vitrines
+data/catalogo.js           categorias, canais e capas de exemplo (ocultas na opção B)
+data/catalogo-oficial.js   GERADO pela planilha: títulos/pôsteres/logotipos autorizados
+modelos/cadastro-catalogo.csv  modelo da planilha de cadastro
 data/avaliacoes.js         avaliações reais e autorizadas (vazio: seção oculta)
 tools/testes/funcional.cjs testes automatizados (Playwright)
 tools/gerar-ilustracoes.mjs
@@ -61,9 +65,9 @@ docs/IMPLANTACAO.md        checklist de testes e implantação
 | Quero… | Edite |
 |---|---|
 | Mudar preços | `data/planos.js`. Economia, valor mensal, destaque, hero e FAQ são recalculados sozinhos. |
-| Trocar capas por pôsteres oficiais | `docs/MATERIAIS.md` (passo a passo) |
-| Incluir logotipos de canais | `data/catalogo.js` → `destaques` (com licença) |
-| Ocultar capas demonstrativas | `data/config.js` → `vitrines.permitirDemonstrativas: false` |
+| Cadastrar pôsteres e logotipos oficiais | planilha `materiais/cadastro.csv` + `npm run importar` (`docs/MATERIAIS.md`) |
+| Mudar o mínimo de títulos por vitrine | `data/config.js` → `vitrines.minimoTitulos` |
+| Ir direto ao Mercado Pago, sem o resumo | `data/config.js` → `confirmarAntesDoCheckout: false` |
 | Mudar categorias de canais | `data/catalogo.js` → `canais` |
 | Publicar avaliações reais | `data/avaliacoes.js` (somente com autorização) |
 | Ligar o checkout | `data/config.js` → `checkout` e `modoPrototipo: false` (somente após aprovação) |

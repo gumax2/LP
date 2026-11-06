@@ -18,7 +18,16 @@ import vm from "node:vm";
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ctx = { window: {} };
 vm.runInNewContext(readFileSync(join(raiz, "data/catalogo.js"), "utf8"), ctx);
-const C = ctx.window.GMAX_CATALOGO;
+const arqOficial = join(raiz, "data/catalogo-oficial.js");
+if (existsSync(arqOficial)) vm.runInNewContext(readFileSync(arqOficial, "utf8"), ctx);
+const B = ctx.window.GMAX_CATALOGO, O = ctx.window.GMAX_CATALOGO_OFICIAL || {};
+// mesma junção feita pela página: oficiais primeiro
+const C = {
+  filmes: (O.filmes || []).concat(B.filmes || []),
+  series: (O.series || []).concat(B.series || []),
+  canais: B.canais || [],
+  destaques: (O.canais || []).concat(B.destaques || []),
+};
 
 const erros = [], avisos = [];
 const hoje = new Date().toISOString().slice(0, 10);
@@ -37,7 +46,7 @@ function validarLicenca(rotulo, item) {
   if (!l) return erros.push(`${rotulo}: item oficial sem bloco "licenca".`);
   if (!TIPOS.includes(l.tipo)) erros.push(`${rotulo}: licenca.tipo inválido (${l.tipo}).`);
   if (!l.titular) erros.push(`${rotulo}: licenca.titular não informado.`);
-  if (!l.documento) erros.push(`${rotulo}: licenca.documento não informado.`);
+  if (!l.documento && !l.registro) erros.push(`${rotulo}: licenca.documento (ou registro) não informado.`);
   if (l.disponivelNoServico !== true) erros.push(`${rotulo}: disponibilidade no serviço não confirmada (licenca.disponivelNoServico).`);
   if (l.validoAte && l.validoAte < hoje) erros.push(`${rotulo}: licença vencida em ${l.validoAte}.`);
 }
@@ -75,7 +84,18 @@ for (const canal of C.destaques || []) {
   for (const f of arquivos(canal)) if (!existsSync(join(raiz, f))) erros.push(`${rotulo}: arquivo não encontrado: ${f}`);
 }
 
-if (ilustrativos) avisos.push(`${ilustrativos} capa(s) demonstrativa(s) ainda no catálogo. Substitua por materiais oficiais autorizados antes de publicar, ou mantenha o selo "Demonstrativo".`);
+const ctxCfg = { window: {} };
+vm.runInNewContext(readFileSync(join(raiz, "data/config.js"), "utf8"), ctxCfg);
+const vit = ctxCfg.window.GMAX_CONFIG.vitrines || {};
+if (ilustrativos) {
+  avisos.push(vit.permitirDemonstrativas === false
+    ? `${ilustrativos} capa(s) de exemplo no catálogo, OCULTAS no site pela configuração (vitrines.permitirDemonstrativas: false).`
+    : `${ilustrativos} capa(s) de exemplo VISÍVEIS no site (selo "Exemplo"). Para ocultar: vitrines.permitirDemonstrativas: false.`);
+}
+for (const tipo of ["filmes", "series"]) {
+  const n = C[tipo].filter((i) => i.autorizado === true && i.ilustrativo !== true).length;
+  if (vit.permitirDemonstrativas === false && n < (vit.minimoTitulos || 1)) avisos.push(`Vitrine de ${tipo}: ${n} título(s) oficial(is), mínimo ${vit.minimoTitulos}. A vitrine fica oculta até atingir o mínimo.`);
+}
 if (!(C.destaques || []).length) avisos.push("Nenhum canal em destaque cadastrado. A seção de logotipos fica oculta no site.");
 
 console.log(`Catálogo: ${oficiais} item(ns) oficial(is), ${ilustrativos} demonstrativo(s).`);

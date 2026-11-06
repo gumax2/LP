@@ -8,7 +8,15 @@
 
   var CONFIG = window.GMAX_CONFIG || {};
   var PLANOS = window.GMAX_PLANOS;
-  var CATALOGO = window.GMAX_CATALOGO || {};
+  // Catálogo = oficiais (importados da planilha, com licença) + base (categorias e exemplos)
+  var BASE = window.GMAX_CATALOGO || {};
+  var OFICIAL = window.GMAX_CATALOGO_OFICIAL || {};
+  var CATALOGO = {
+    filmes: (OFICIAL.filmes || []).concat(BASE.filmes || []),
+    series: (OFICIAL.series || []).concat(BASE.series || []),
+    canais: BASE.canais || [],
+    destaques: (OFICIAL.canais || []).concat(BASE.destaques || []),
+  };
   var AVALIACOES = window.GMAX_AVALIACOES || [];
   var reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -67,10 +75,13 @@
     if (!item || item.autorizado !== true) return false;
     if (item.ilustrativo === true) return true;
     var l = item.licenca;
-    return !!(l && l.titular && l.documento && l.disponivelNoServico === true && (!l.validoAte || l.validoAte >= HOJE));
+    return !!(l && l.titular && (l.documento || l.registro) && l.disponivelNoServico === true && (!l.validoAte || l.validoAte >= HOJE));
   }
 
   var VITRINES = CONFIG.vitrines || { permitirDemonstrativas: true, minimoTitulos: 1 };
+  // Protótipo: o avaliador pode ver os carrosséis com as capas de exemplo (selo "Exemplo").
+  var DEMO_VITRINES = !!CONFIG.modoPrototipo && storage("gmax_demo_vitrines") === "1";
+  if (DEMO_VITRINES) VITRINES = { permitirDemonstrativas: true, minimoTitulos: 1 };
   function exibivelNaVitrine(item) {
     return podeExibir(item) && (VITRINES.permitirDemonstrativas !== false || item.ilustrativo !== true);
   }
@@ -159,6 +170,24 @@
   }
 
   function contratar(plano) {
+    var dlg = $("#checkout-dialog");
+    if (CONFIG.confirmarAntesDoCheckout !== false && dlg && typeof dlg.showModal === "function") {
+      $("#dlg-t", dlg).textContent = "Plano " + plano.periodo.nome + " · " + tvsTexto(plano.tvs);
+      $("#dlg-total", dlg).textContent = reais(plano.total);
+      $("#dlg-per", dlg).textContent = "por " + mesesTexto(plano.periodo.meses) + (plano.periodo.meses > 1 ? " (" + reais(plano.porMes) + "/mês)" : "");
+      dlg.returnValue = "";
+      dlg.onclose = function () {
+        if (dlg.returnValue === "ok") irParaCheckout(plano);
+        else track("checkout_cancel", { plano: plano.tvs + "-" + plano.periodo.id });
+      };
+      dlg.showModal();
+      track("checkout_confirm_view", { plano: plano.tvs + "-" + plano.periodo.id });
+      return;
+    }
+    irParaCheckout(plano);
+  }
+
+  function irParaCheckout(plano) {
     var chave = plano.tvs + "-" + plano.periodo.id;
     track("begin_checkout", { plano: chave, valor: plano.total, moeda: "BRL", tvs: plano.tvs, meses: plano.periodo.meses });
     var resumo = plano.periodo.nome + " · " + tvsTexto(plano.tvs) + " · " + reais(plano.total);
@@ -194,6 +223,7 @@
   /* ------------------------------------------------------------------ */
   function iniciarCabecalho() {
     var header = $(".site-header");
+    if (!header) return;
     var barra = $("#mobile-bar");
     var hero = $(".hero");
     // a barra some onde a página já oferece o mesmo botão (evita CTA duplicado)
@@ -254,6 +284,15 @@
     if (barraProto) {
       if (!CONFIG.modoPrototipo || storage("gmax_proto_bar") === "fechado") barraProto.hidden = true;
       $("#proto-close").addEventListener("click", function () { barraProto.hidden = true; storage("gmax_proto_bar", "fechado"); });
+      var demo = $("#proto-demo");
+      if (demo) {
+        demo.setAttribute("aria-pressed", String(DEMO_VITRINES));
+        demo.textContent = DEMO_VITRINES ? "Ocultar vitrines de exemplo" : "Ver vitrines de exemplo";
+        demo.addEventListener("click", function () {
+          storage("gmax_demo_vitrines", DEMO_VITRINES ? "0" : "1");
+          window.location.reload();
+        });
+      }
     }
   }
 
@@ -265,8 +304,13 @@
   }
 
   function iniciarHero() {
+    // A ilustração própria já vem visível no HTML (sem deslocar o layout).
+    // Ela só dá lugar às capas quando há capas exibíveis.
     var capas = capasAutorizadas();
-    if (!capas.length) return;
+    var visual = $("#hero-visual"), hero = $(".hero");
+    if (!capas.length) { if (visual) pausarForaDaTela(visual); return; }
+    if (visual) visual.hidden = true;
+    if (hero) hero.classList.remove("has-visual");
     var desktop = window.matchMedia("(min-width: 768px)");
 
     function montarParede() {
@@ -362,7 +406,7 @@
     var f = item.fontes || {};
     var img = el("img", {
       src: item.imagem,
-      alt: (item.ilustrativo ? "Capa demonstrativa: " : "Pôster de ") + item.titulo,
+      alt: (item.ilustrativo ? "Capa fictícia de exemplo: " : "Pôster de ") + item.titulo,
       width: String(item.largura || 400), height: String(item.altura || 600),
       loading: "lazy", decoding: "async",
     });
@@ -380,7 +424,7 @@
     var frame = el("div", { class: "poster__frame" }, [imagemCapa(item)]);
     // preserva a proporção original do pôster oficial (sem cortar)
     if (item.largura && item.altura) frame.style.aspectRatio = item.largura + " / " + item.altura;
-    if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Demonstrativo" }));
+    if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Exemplo" }));
     return el("li", null, [
       el("figure", { class: "poster" }, [
         frame,
@@ -393,11 +437,16 @@
   }
 
   function cartaoCategoria(cat) {
-    var card = el("div", { class: "cat" }, [
+    var card = el("button", {
+      class: "cat cat--" + cat.id, type: "button",
+      "data-wa": "Olá! Quero saber quais canais de " + cat.nome + " estão disponíveis na GMAX.",
+      "data-origem": "categoria_" + cat.id,
+    }, [
       icone("c-" + cat.icone, "cat__bg"),
       el("span", { class: "cat__ico-wrap" }, [icone("c-" + cat.icone, "cat__ico")]),
-      el("h4", { class: "cat__n", text: cat.nome }),
-      el("p", { class: "cat__d", text: cat.descricao }),
+      el("span", { class: "cat__n", text: cat.nome }),
+      el("span", { class: "cat__d", text: cat.descricao }),
+      el("span", { class: "cat__ask" }, ["Consultar canais", icone("i-arrow", "ico")]),
     ]);
     if (/^#[0-9a-f]{3,8}$/i.test(cat.tom || "")) card.style.setProperty("--tom", cat.tom);
     return el("li", null, [card]);
@@ -449,12 +498,8 @@
       });
     });
 
-    var raizCanais = $('.rail[data-rail="canais"]');
-    if (raizCanais) {
-      var car = new Carrossel(raizCanais);
-      car.preencher((CATALOGO.canais || []).map(cartaoCategoria));
-      animarAoEntrar(car);
-    }
+    var gradeCats = $("#cats-grid");
+    if (gradeCats) (CATALOGO.canais || []).forEach(function (c) { gradeCats.appendChild(cartaoCategoria(c)); });
     iniciarCanaisDestaque();
 
     // o aviso de capas demonstrativas só aparece se houver alguma na tela
@@ -477,7 +522,7 @@
       // Protótipo: mostra só o LAYOUT, com espaços reservados neutros (nenhum canal real).
       demonstracao = true;
       canais = categorias.map(function (c) { return { id: "ex-" + c.id, categoria: c.id }; })
-        .concat(categorias.slice(0, 3).map(function (c) { return { id: "ex2-" + c.id, categoria: c.id }; }));
+        .concat(categorias.slice(0, 1).map(function (c) { return { id: "ex2-" + c.id, categoria: c.id }; }));
       $(".channels__demo", secao).hidden = false;
     }
 

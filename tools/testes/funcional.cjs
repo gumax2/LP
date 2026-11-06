@@ -49,14 +49,31 @@ const toastTexto = (page) => page.locator("#toast").innerText();
   {
     const { ctx, page, erros, eventos } = await pagina(browser, { viewport: { width: 1440, height: 900 } }, null);
     check("primeiro foco do teclado é o link 'Pular para o conteúdo'", await (async () => { await page.keyboard.press("Tab"); return page.evaluate(() => document.activeElement.className === "skip"); })());
-    check("parede de capas montada no hero", (await page.locator("#hero-cols img").count()) > 0);
-    check("faixa de capas do celular NÃO carregada no computador", (await page.locator("#hero-band img").count()) === 0);
+    console.log("  — opção B (padrão): sem capas de exemplo");
+    check("hero com ilustração própria", await page.locator("#hero-visual").isVisible());
+    check("nenhuma capa no hero (parede e faixa vazias)", (await page.locator("#hero-cols img, #hero-band img").count()) === 0);
+    check("vitrines de filmes e séries ocultas", (await page.locator('[data-rail="filmes"]').isHidden()) && (await page.locator('[data-rail="series"]').isHidden()));
+    check("nenhuma capa fictícia na página", (await page.locator(".poster").count()) === 0);
+    check("aviso de capas de exemplo oculto", await page.locator(".disclaimer").isHidden());
     check("hero mostra preço calculado da tabela", (await page.locator("#hero-preco").innerText()).replace(/\u00a0/g, " ").includes("R$ 25,00/mês"));
 
+    check("7 categorias em grade", (await page.locator("#cats-grid .cat").count()) === 7);
+    await page.locator("#cats-grid .cat--esportes").scrollIntoViewIfNeeded();
+    await page.click("#cats-grid .cat--esportes");
+    await page.waitForTimeout(150);
+    check("categoria pergunta a disponibilidade no WhatsApp", (await toastTexto(page)).includes("Quero saber quais canais de Esportes estão disponíveis"));
+
+    console.log("  — protótipo: 'Ver vitrines de exemplo' (carrosséis preservados)");
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.click("#proto-demo");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(300);
+    check("parede de capas montada no hero", (await page.locator("#hero-cols img").count()) > 0);
+    check("ilustração do hero oculta quando há capas", await page.locator("#hero-visual").isHidden());
     check("12 filmes", (await page.locator('[data-rail="filmes"] .poster').count()) === 12);
     check("12 séries", (await page.locator('[data-rail="series"] .poster').count()) === 12);
-    check("7 categorias de canais", (await page.locator(".cat").count()) === 7);
-    check("selo 'Demonstrativo' em todas as capas", (await page.locator(".poster__badge").count()) === 24);
+    check("selo 'Exemplo' em todas as capas", (await page.locator(".poster__badge", { hasText: "Exemplo" }).count()) === 24);
+    check("texto alternativo indica capa fictícia", await page.evaluate(() => [...document.querySelectorAll(".poster img")].every((i) => i.alt.startsWith("Capa fictícia de exemplo"))));
     check("imagens das vitrines com lazy loading", await page.evaluate(() => [...document.querySelectorAll(".poster img")].every((i) => i.loading === "lazy")));
 
     const trilho = page.locator('[data-rail="filmes"] .rail__track');
@@ -109,8 +126,19 @@ const toastTexto = (page) => page.locator("#toast").innerText();
     await page.click(`label[for=tvs-3]`);
     const url0 = page.url();
     await page.locator(".plan--best .btn").click();
+    await page.waitForTimeout(200);
+    check("Assinar abre o resumo antes do pagamento", await page.locator("#checkout-dialog").isVisible());
+    check("resumo mostra plano e valor certos", (await page.locator("#dlg-t").innerText()).includes("Anual · 3 TVs") && (await page.locator("#dlg-total").innerText()).replace(/\u00a0/g, " ") === "R$ 735,00");
+    check("resumo pede o comprovante e avisa sobre demora", (await page.locator(".dlg__steps").innerText()).includes("comprovante") && (await page.locator(".dlg__steps").innerText()).includes("pode demorar"));
+    check("resumo informa Mercado Pago", (await page.locator(".dlg__secure").innerText()).includes("Mercado Pago"));
+    await page.keyboard.press("Escape");
     await page.waitForTimeout(150);
-    check("Assinar → aviso de checkout desativado", (await toastTexto(page)).includes("Checkout desativado"));
+    check("Esc fecha o resumo sem ir ao checkout", (await page.locator("#checkout-dialog").isHidden()) && !(await page.locator("#toast").innerText()).includes("Checkout"));
+    await page.locator(".plan--best .btn").click();
+    await page.waitForTimeout(150);
+    await page.click("#dlg-ok");
+    await page.waitForTimeout(150);
+    check("'Ir para o pagamento' → aviso de checkout desativado", (await toastTexto(page)).includes("Checkout desativado"));
     check("Assinar não navega para fora", page.url() === url0);
 
     await page.locator("#indique").scrollIntoViewIfNeeded();
@@ -120,6 +148,14 @@ const toastTexto = (page) => page.locator("#toast").innerText();
     check("botão de indicação usa a mensagem oficial",
       (await toastTexto(page)).includes("Olá! Sou cliente GMAX e quero participar da promoção de indicação. Como faço para indicar um amigo?"));
 
+    await page.locator("#atendimento").scrollIntoViewIfNeeded();
+    await page.click('[data-origem="suporte_comprovante"]');
+    await page.waitForTimeout(150);
+    check("suporte: enviar comprovante com mensagem própria", (await toastTexto(page)).includes("vou enviar o comprovante de pagamento"));
+    await page.click('[data-origem="atendimento_comercial"]');
+    await page.waitForTimeout(150);
+    check("comercial: mensagem de interesse nos planos", (await toastTexto(page)).includes("Tenho interesse em conhecer os planos"));
+    check("aviso sobre o tempo de resposta visível", (await page.locator("#atendimento .notice").innerText()).includes("pode demorar"));
     check("seção de avaliações: aviso de seção preparada (sem dados fictícios)", (await page.locator(".reviews__empty").count()) === 1 && (await page.locator(".review").count()) === 0);
 
     await page.locator("#duvidas").scrollIntoViewIfNeeded();
@@ -140,7 +176,7 @@ const toastTexto = (page) => page.locator("#toast").innerText();
     await page.click('#faq-chips .chip[data-v="Teste"]');
     check("após aceitar, eventos vão para o dataLayer", (await page.evaluate(() => window.dataLayer.length)) > 0);
 
-    const esperados = ["select_tvs", "begin_checkout", "whatsapp_click", "referral_click", "faq_open", "filtro_vitrine", "rail_nav", "view_plans"];
+    const esperados = ["select_tvs", "checkout_confirm_view", "checkout_cancel", "begin_checkout", "whatsapp_click", "receipt_click", "referral_click", "faq_open", "filtro_vitrine", "rail_nav", "view_plans"];
     const faltando = esperados.filter((e) => !eventos.includes(e));
     check("eventos de conversão disparados", faltando.length === 0, "faltando: " + faltando.join(", "));
     check("sem erros no console", erros.length === 0, erros.join(" | "));
@@ -150,8 +186,8 @@ const toastTexto = (page) => page.locator("#toast").innerText();
   console.log("\n▶ Celular (iPhone 13)");
   {
     const { ctx, page, erros } = await pagina(browser, devices["iPhone 13"], null);
-    check("faixa de capas no hero do celular", (await page.locator("#hero-band img").count()) > 0);
-    check("parede do computador NÃO carregada no celular", (await page.locator("#hero-cols img").count()) === 0);
+    check("ilustração própria no hero do celular", (await page.locator("#hero-visual").count()) === 1 && !(await page.locator("#hero-visual").evaluate((e) => e.hidden)));
+    check("nenhuma capa no hero do celular", (await page.locator("#hero-band img, #hero-cols img").count()) === 0);
     check("botões principais visíveis na primeira tela", await page.locator(".hero .hero__actions .btn--primary").isVisible() && (await page.locator(".hero .hero__actions .btn--primary").boundingBox()).y < 844);
     check("aviso de cookies não aparece antes de rolar", !(await page.locator("#consent").isVisible()));
     check("barra fixa escondida no topo", !(await page.locator("#mobile-bar").evaluate((b) => b.classList.contains("is-visible"))));
@@ -183,6 +219,10 @@ const toastTexto = (page) => page.locator("#toast").innerText();
     check("regras da promoção recolhidas no celular", !(await page.locator("#ref-regras").evaluate((d) => d.open)));
     check("botão flutuante oculto no celular", !(await page.locator(".wa-float").isVisible()));
 
+    await page.evaluate(() => { localStorage.setItem("gmax_demo_vitrines", "1"); });
+    await page.reload({ waitUntil: "networkidle" });
+    check("vitrines de exemplo: faixa de capas no celular", (await page.locator("#hero-band img").count()) > 0);
+    check("vitrines de exemplo: parede do computador não carregada", (await page.locator("#hero-cols img").count()) === 0);
     const trilho = page.locator('[data-rail="series"] .rail__track');
     await trilho.scrollIntoViewIfNeeded();
     const box = await trilho.boundingBox();
@@ -197,7 +237,7 @@ const toastTexto = (page) => page.locator("#toast").innerText();
   console.log("\n▶ Movimento reduzido");
   {
     const { ctx, page, erros } = await pagina(browser, { viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" }, "nao");
-    check("parede do hero parada", await page.evaluate(() => getComputedStyle(document.querySelector(".hero__col")).animationName === "none"));
+    check("animações do hero praticamente desligadas", await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector(".hv__chip")).animationDuration) < 0.01));
     check("conteúdo visível sem animação de entrada", await page.evaluate(() => [...document.querySelectorAll(".reveal")].length === 0));
     check("sem erros no console", erros.length === 0, erros.join(" | "));
     await ctx.close();
@@ -210,6 +250,24 @@ const toastTexto = (page) => page.locator("#toast").innerText();
     const sw = await page.evaluate(() => document.documentElement.scrollWidth);
     check("360px sem rolagem horizontal", sw <= 360);
     check("planos renderizados", (await page.locator(".plan").count()) === 4);
+    check("sem erros no console", erros.length === 0, erros.join(" | "));
+    await ctx.close();
+  }
+
+  console.log("\n▶ Página de retorno após o pagamento (obrigado.html)");
+  {
+    const ctx = await browser.newContext(devices["iPhone 13"]);
+    const page = await ctx.newPage();
+    const erros = [];
+    page.on("pageerror", (e) => erros.push(e.message));
+    page.on("console", (m) => { if (m.type() === "error") erros.push(m.text()); });
+    await page.goto(URL.replace(/\/?$/, "/") + "obrigado.html", { waitUntil: "networkidle" });
+    check("não indexável", (await page.locator('meta[name="robots"]').getAttribute("content")).includes("noindex"));
+    await page.click('[data-origem="pagina_obrigado"]');
+    await page.waitForTimeout(150);
+    check("botão de comprovante com mensagem própria", (await page.locator("#toast").innerText()).includes("vou enviar o comprovante de pagamento"));
+    check("aviso sobre o tempo de resposta", (await page.locator(".notice").innerText()).includes("pode demorar"));
+    check("sem rolagem horizontal", (await page.evaluate(() => document.documentElement.scrollWidth)) <= 390);
     check("sem erros no console", erros.length === 0, erros.join(" | "));
     await ctx.close();
   }
