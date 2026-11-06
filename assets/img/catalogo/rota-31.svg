@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600" role="img" aria-label="Rota 31 (ilustração)">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1410"/><stop offset="1" stop-color="#120607"/></linearGradient>
+<radialGradient id="glow"><stop offset="0" stop-color="#fb923c" stop-opacity=".55"/><stop offset="1" stop-color="#fb923c" stop-opacity="0"/></radialGradient>
+<radialGradient id="planeta" cx=".35" cy=".3"><stop offset="0" stop-color="#fb923c"/><stop offset=".55" stop-color="#3a1410"/><stop offset="1" stop-color="#120607"/></radialGradient>
+<linearGradient id="feixe" x1="0" x2="1"><stop offset="0" stop-color="#fb923c" stop-opacity=".55"/><stop offset="1" stop-color="#fb923c" stop-opacity="0"/></linearGradient>
+<linearGradient id="feixe2" x1="1" x2="0"><stop offset="0" stop-color="#fb923c" stop-opacity=".35"/><stop offset="1" stop-color="#fb923c" stop-opacity="0"/></linearGradient>
+<linearGradient id="base" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".85"/></linearGradient>
+</defs>
+<rect width="400" height="600" fill="url(#bg)"/>
+<circle cx="200" cy="260" r="120" fill="#fb923c"/><rect x="60" y="278" width="280" height="3" fill="#3a1410"/><rect x="60" y="293" width="280" height="4.2" fill="#3a1410"/><rect x="60" y="308" width="280" height="5.4" fill="#3a1410"/><rect x="60" y="323" width="280" height="6.6" fill="#3a1410"/><rect x="60" y="338" width="280" height="7.8" fill="#3a1410"/><rect x="60" y="353" width="280" height="9" fill="#3a1410"/><rect x="60" y="368" width="280" height="10.2" fill="#3a1410"/><path d="M0 600 L0 360 Q 92.7 295.7 213.6 370 T 400 340 L400 600 Z" fill="#120607" opacity="0.8"/><path d="M0 600 L0 410 Q 122.9 354.6 219.5 420 T 400 390 L400 600 Z" fill="#3a1410" opacity="0.8"/><path d="M0 600 L0 460 Q 141.6 389 225.5 470 T 400 440 L400 600 Z" fill="#120607" opacity="0.9"/><path d="M0 600 L0 510 Q 84.9 426.5 218.5 520 T 400 490 L400 600 Z" fill="#3a1410" opacity="1"/>
+<rect width="400" height="600" fill="url(#base)"/>
+<text x="200" y="496" text-anchor="middle" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" letter-spacing="4" fill="#fb923c">AÇÃO</text>
+<g font-family="Sora, 'Segoe UI', Arial, sans-serif" font-weight="700" fill="#fff" letter-spacing="1"><text x="200" y="554" text-anchor="middle" font-size="54">ROTA 31</text></g>
+</svg>

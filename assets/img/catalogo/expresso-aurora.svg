@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600" role="img" aria-label="Expresso Aurora (ilustração)">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1036"/><stop offset="1" stop-color="#0b0412"/></linearGradient>
+<radialGradient id="glow"><stop offset="0" stop-color="#fda4af" stop-opacity=".55"/><stop offset="1" stop-color="#fda4af" stop-opacity="0"/></radialGradient>
+<radialGradient id="planeta" cx=".35" cy=".3"><stop offset="0" stop-color="#fda4af"/><stop offset=".55" stop-color="#2a1036"/><stop offset="1" stop-color="#0b0412"/></radialGradient>
+<linearGradient id="feixe" x1="0" x2="1"><stop offset="0" stop-color="#fda4af" stop-opacity=".55"/><stop offset="1" stop-color="#fda4af" stop-opacity="0"/></linearGradient>
+<linearGradient id="feixe2" x1="1" x2="0"><stop offset="0" stop-color="#fda4af" stop-opacity=".35"/><stop offset="1" stop-color="#fda4af" stop-opacity="0"/></linearGradient>
+<linearGradient id="base" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".85"/></linearGradient>
+</defs>
+<rect width="400" height="600" fill="url(#bg)"/>
+<circle cx="214.7" cy="230" r="170" fill="url(#glow)" opacity=".55"/>
+<circle cx="214.7" cy="225" r="78" fill="#0b0412"/>
+<path d="M64.69999999999999 600 C 74.69999999999999 390, 144.7 340, 214.7 340 C 284.7 340, 354.7 390, 364.7 600 Z" fill="#0b0412"/>
+<path d="M264.7 168 A 78 78 0 0 1 266.7 285" fill="none" stroke="#fda4af" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+<path d="M284.7 352 C 332.7 370, 354.7 420, 362.7 520" fill="none" stroke="#fda4af" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+<circle cx="47.6" cy="142.4" r="1.6" fill="#fda4af" opacity="0.5"/><circle cx="132.2" cy="551" r="0.8" fill="#fda4af" opacity="0.5"/><circle cx="321.5" cy="309.4" r="1" fill="#fda4af" opacity="0.9"/><circle cx="296.1" cy="142.6" r="1.5" fill="#fda4af" opacity="0.3"/><circle cx="392.9" cy="383.5" r="0.4" fill="#fda4af" opacity="0.8"/><circle cx="207.6" cy="215.1" r="0.9" fill="#fda4af" opacity="0.7"/><circle cx="149.7" cy="40" r="0.6" fill="#fda4af" opacity="0.8"/><circle cx="265.1" cy="304.4" r="0.3" fill="#fda4af" opacity="0.8"/><circle cx="317.5" cy="538.3" r="1.1" fill="#fda4af" opacity="0.8"/><circle cx="203.6" cy="29.9" r="1.2" fill="#fda4af" opacity="0.3"/><circle cx="313.5" cy="180.8" r="1.3" fill="#fda4af" opacity="0.7"/><circle cx="238.1" cy="547.7" r="1.7" fill="#fda4af" opacity="0.4"/><circle cx="388.9" cy="22.1" r="1.3" fill="#fda4af" opacity="0.2"/><circle cx="386.9" cy="76.5" r="1" fill="#fda4af" opacity="0.4"/><circle cx="381.2" cy="81.8" r="0.3" fill="#fda4af" opacity="0.6"/><circle cx="336" cy="370.4" r="1.2" fill="#fda4af" opacity="0.4"/><circle cx="50.6" cy="295.4" r="1.6" fill="#fda4af" opacity="0.3"/><circle cx="72" cy="378.3" r="1.3" fill="#fda4af" opacity="0.2"/><circle cx="138" cy="428.6" r="1.7" fill="#fda4af" opacity="0.5"/><circle cx="230.5" cy="196.5" r="0.5" fill="#fda4af" opacity="0.4"/><circle cx="271.3" cy="88.6" r="1.6" fill="#fda4af" opacity="0.7"/><circle cx="277.3" cy="30.8" r="0.5" fill="#fda4af" opacity="0.9"/><circle cx="119" cy="54.7" r="0.7" fill="#fda4af" opacity="0.7"/><circle cx="18.9" cy="208.9" r="1.5" fill="#fda4af" opacity="0.8"/><circle cx="3.3" cy="43.4" r="1.3" fill="#fda4af" opacity="0.4"/><rect width="400" height="600" fill="#2a1036" opacity=".08"/>
+<rect width="400" height="600" fill="url(#base)"/>
+<text x="200" y="440.9" text-anchor="middle" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" letter-spacing="4" fill="#fda4af">ROMANCE</text>
+<g font-family="Sora, 'Segoe UI', Arial, sans-serif" font-weight="700" fill="#fff" letter-spacing="1"><text x="200" y="498.9" text-anchor="middle" font-size="54">EXPRESSO</text><text x="200" y="554" text-anchor="middle" font-size="54">AURORA</text></g>
+</svg>

@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>GMAX | Filmes, séries e canais em até 5 TVs</title>
+  <meta name="description" content="Assine a GMAX: filmes, séries e canais organizados por categoria, com planos de 1 a 5 TVs e períodos mensal, trimestral, semestral e anual. Suporte pelo WhatsApp.">
+  <meta name="theme-color" content="#060d1c">
+  <!-- PROTÓTIPO: não indexar até a publicação aprovada -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- CSP (em produção, preferir enviar como cabeçalho HTTP — ver docs/IMPLANTACAO.md) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="canonical" href="https://www.gmaxcanais.com.br/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="GMAX | Filmes, séries e canais em até 5 TVs">
+  <meta property="og:description" content="Planos de 1 a 5 TVs, do mensal ao anual. Suporte pelo WhatsApp.">
+  <meta property="og:url" content="https://www.gmaxcanais.com.br/">
+  <!-- PENDENTE: og:image 1200×630 com a logo oficial -->
+  <link rel="preload" href="assets/fonts/sora-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="data/config.js" defer></script>
+  <script src="data/planos.js" defer></script>
+  <script src="data/catalogo.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo-principal">Pular para o conteúdo</a>
+
+  <div class="proto-bar" id="proto-bar" role="note">
+    <div class="wrap proto-bar__in">
+      <p><strong>Protótipo GMAX.</strong> Checkouts desativados, imagens ilustrativas e valores de referência.</p>
+      <button class="proto-bar__close" type="button" id="proto-close" aria-label="Fechar aviso do protótipo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <header class="site-header" id="topo">
+    <div class="wrap site-header__in">
+      <!-- PENDENTE: substituir pelo SVG da logo oficial GMAX (assets/img/logo-gmax.svg) -->
+      <a class="brand" href="#topo" aria-label="GMAX — início">
+        <span class="brand__word">GMAX</span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <ul class="nav__list">
+          <li><a href="#conteudo">Conteúdo</a></li>
+          <li><a href="#planos">Planos</a></li>
+          <li><a href="#como-funciona">Como funciona</a></li>
+          <li><a href="#app">GMAX Player</a></li>
+          <li><a href="#duvidas">Dúvidas</a></li>
+        </ul>
+      </nav>
+      <div class="site-header__cta">
+        <a class="btn btn--primary btn--sm" href="#planos" data-track="cta_click" data-local="header">Assinar</a>
+        <button class="menu-toggle" type="button" id="menu-toggle" aria-expanded="false" aria-controls="menu-mobile" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="menu-mobile" id="menu-mobile" hidden>
+      <nav aria-label="Menu móvel">
+        <ul>
+          <li><a href="#conteudo">Conteúdo</a></li>
+          <li><a href="#planos">Planos e preços</a></li>
+          <li><a href="#como-funciona">Como funciona</a></li>
+          <li><a href="#app">GMAX Player</a></li>
+          <li><a href="#duvidas">Dúvidas frequentes</a></li>
+        </ul>
+        <a class="btn btn--primary btn--block" href="#planos" data-track="cta_click" data-local="menu">Ver planos</a>
+        <button class="btn btn--ghost btn--block" type="button" data-wa="Olá! Vim pelo site e quero tirar uma dúvida." data-origem="menu">Falar no WhatsApp</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo-principal">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-titulo">
+      <div class="hero__wall" aria-hidden="true">
+        <div class="hero__cols" id="hero-cols"></div>
+      </div>
+      <div class="wrap hero__in">
+        <p class="eyebrow">Filmes · Séries · Canais</p>
+        <h1 id="hero-titulo" class="hero__title">Tudo o que você quer assistir, <span class="grad">numa só assinatura.</span></h1>
+        <p class="hero__lead">Planos de 1 a 5 TVs, do mensal ao anual. No plano anual de 1 TV, sai por <strong>R$&nbsp;25 por mês</strong>.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#planos" data-track="cta_click" data-local="hero">Ver planos e preços</a>
+          <button class="btn btn--ghost btn--lg" type="button" data-wa="Olá! Vim pelo site e gostaria de solicitar um teste." data-origem="hero_teste" data-track-extra="trial_request">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+            Pedir teste pelo WhatsApp
+          </button>
+        </div>
+        <ul class="hero__trust">
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tv"/></svg>Até 5 TVs por assinatura</li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cal"/></svg>Planos de 1 a 12 meses</li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg>Suporte pelo WhatsApp</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CONTEÚDO -->
+    <section class="section" id="conteudo" aria-labelledby="conteudo-titulo">
+      <div class="wrap section-head">
+        <p class="eyebrow">Conteúdo</p>
+        <h2 id="conteudo-titulo">Escolha o que assistir hoje</h2>
+        <p class="lead">Filmes, séries e canais organizados para você achar rápido o que quer ver.</p>
+      </div>
+
+      <div class="rail" data-rail="filmes" aria-labelledby="rail-filmes-t">
+        <div class="wrap rail__head">
+          <div>
+            <h3 id="rail-filmes-t" class="rail__title">Filmes em destaque</h3>
+            <div class="chips" role="toolbar" aria-label="Filtrar filmes por gênero" data-chips="filmes"></div>
+          </div>
+          <div class="rail__ctrls">
+            <button class="rail__btn" type="button" data-dir="-1" aria-label="Filmes anteriores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button class="rail__btn" type="button" data-dir="1" aria-label="Próximos filmes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+        <div class="rail__viewport">
+          <ul class="rail__track" tabindex="0" aria-label="Filmes em destaque, role para o lado para ver mais"></ul>
+        </div>
+        <div class="wrap"><div class="rail__progress" aria-hidden="true"><span></span></div></div>
+      </div>
+
+      <div class="rail" data-rail="series" aria-labelledby="rail-series-t">
+        <div class="wrap rail__head">
+          <div>
+            <h3 id="rail-series-t" class="rail__title">Séries populares</h3>
+            <div class="chips" role="toolbar" aria-label="Filtrar séries por gênero" data-chips="series"></div>
+          </div>
+          <div class="rail__ctrls">
+            <button class="rail__btn" type="button" data-dir="-1" aria-label="Séries anteriores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button class="rail__btn" type="button" data-dir="1" aria-label="Próximas séries"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+        <div class="rail__viewport">
+          <ul class="rail__track" tabindex="0" aria-label="Séries populares, role para o lado para ver mais"></ul>
+        </div>
+        <div class="wrap"><div class="rail__progress" aria-hidden="true"><span></span></div></div>
+      </div>
+
+      <div class="rail rail--cats" data-rail="canais" aria-labelledby="rail-canais-t">
+        <div class="wrap rail__head">
+          <div>
+            <h3 id="rail-canais-t" class="rail__title">Canais por categoria</h3>
+            <p class="rail__sub">A grade de canais de cada categoria será exibida conforme a lista oficial.</p>
+          </div>
+          <div class="rail__ctrls">
+            <button class="rail__btn" type="button" data-dir="-1" aria-label="Categorias anteriores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button class="rail__btn" type="button" data-dir="1" aria-label="Próximas categorias"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+        <div class="rail__viewport">
+          <ul class="rail__track" tabindex="0" aria-label="Categorias de canais, role para o lado para ver mais"></ul>
+        </div>
+        <div class="wrap"><div class="rail__progress" aria-hidden="true"><span></span></div></div>
+      </div>
+
+      <p class="wrap disclaimer">Capas e títulos ilustrativos, criados para este protótipo. A vitrine oficial usará somente materiais com divulgação autorizada.</p>
+    </section>
+
+    <!-- PLANOS -->
+    <section class="section section--plans" id="planos" aria-labelledby="planos-titulo">
+      <div class="wrap">
+        <div class="section-head section-head--center">
+          <p class="eyebrow">Planos</p>
+          <h2 id="planos-titulo">Quanto mais tempo, menos você paga por mês</h2>
+          <p class="lead">Escolha quantas TVs vão usar a assinatura e compare os períodos.</p>
+        </div>
+
+        <fieldset class="tv-picker">
+          <legend>Quantas TVs?</legend>
+          <div class="tv-picker__opts" id="tv-picker"></div>
+          <div class="tv-picker__screens" id="tv-screens" aria-hidden="true"></div>
+        </fieldset>
+
+        <div class="plan-grid" id="plan-grid" aria-live="polite"></div>
+
+        <noscript>
+          <table class="plan-table">
+            <caption>Tabela de preços (valores totais por período)</caption>
+            <thead><tr><th scope="col">TVs</th><th scope="col">Mensal</th><th scope="col">Trimestral</th><th scope="col">Semestral</th><th scope="col">Anual</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1</th><td>R$ 35</td><td>R$ 95</td><td>R$ 175</td><td>R$ 300</td></tr>
+              <tr><th scope="row">2</th><td>R$ 70</td><td>R$ 185</td><td>R$ 340</td><td>R$ 580</td></tr>
+              <tr><th scope="row">3</th><td>R$ 90</td><td>R$ 240</td><td>R$ 435</td><td>R$ 735</td></tr>
+              <tr><th scope="row">4</th><td>R$ 120</td><td>R$ 315</td><td>R$ 560</td><td>R$ 940</td></tr>
+              <tr><th scope="row">5</th><td>R$ 150</td><td>R$ 390</td><td>R$ 685</td><td>R$ 1.125</td></tr>
+            </tbody>
+          </table>
+        </noscript>
+
+        <p class="plans-note">
+          <span class="pending">a confirmar</span>
+          Valores de referência. Formas de pagamento e condições serão exibidas após a confirmação da tabela vigente.
+          Prefere conversar antes? <button class="link" type="button" data-wa="Olá! Quero ajuda para escolher um plano." data-origem="planos_ajuda">Fale com a gente no WhatsApp</button>.
+        </p>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="section" id="como-funciona" aria-labelledby="como-titulo">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Como funciona</p>
+          <h2 id="como-titulo">Da escolha à primeira sessão</h2>
+        </div>
+        <ol class="steps">
+          <li class="step">
+            <span class="step__n" aria-hidden="true">1</span>
+            <h3>Escolha o plano</h3>
+            <p>Defina quantas TVs e por quanto tempo. O valor total aparece antes de você contratar.</p>
+          </li>
+          <li class="step">
+            <span class="step__n" aria-hidden="true">2</span>
+            <h3>Faça o pagamento</h3>
+            <p>Conclua a contratação no checkout seguro da GMAX.</p>
+          </li>
+          <li class="step">
+            <span class="step__n" aria-hidden="true">3</span>
+            <h3>Receba seu acesso</h3>
+            <p>Você recebe as instruções de acesso e instalação. <span class="pending">a confirmar</span></p>
+          </li>
+          <li class="step">
+            <span class="step__n" aria-hidden="true">4</span>
+            <h3>Comece a assistir</h3>
+            <p>Instale o aplicativo, entre com seu acesso e aproveite. Dúvidas? O suporte atende pelo WhatsApp.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- GMAX PLAYER -->
+    <section class="section section--app" id="app" aria-labelledby="app-titulo">
+      <div class="wrap app">
+        <div class="app__visual" aria-hidden="true">
+          <div class="device">
+            <div class="device__screen">
+              <div class="ui">
+                <div class="ui__side"><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="ui__main">
+                  <div class="ui__hero"></div>
+                  <div class="ui__row"><b></b><b></b><b></b><b></b><b></b></div>
+                  <div class="ui__row"><b></b><b></b><b></b><b></b><b></b></div>
+                </div>
+              </div>
+            </div>
+            <div class="device__stand"></div>
+          </div>
+          <p class="app__caption">Interface ilustrativa. Será substituída por capturas reais do app.</p>
+        </div>
+
+        <div class="app__copy">
+          <p class="eyebrow">Aplicativo</p>
+          <h2 id="app-titulo">GMAX Player</h2>
+          <p class="lead">Nosso aplicativo reprodutor para Android, disponível na Google Play.</p>
+          <a class="btn btn--light" href="https://play.google.com/store/apps/details?id=br.com.gmax.player" target="_blank" rel="noopener noreferrer" data-track="play_store_click" data-local="app">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg>
+            Ver na Google Play
+          </a>
+          <p class="app__devices"><span class="pending">a confirmar</span> Dispositivos e versões do Android compatíveis serão listados conforme a ficha oficial da Google Play.</p>
+
+          <div class="compare">
+            <div class="compare__col">
+              <h3 class="compare__h"><span>GMAX Player</span><small>aplicativo</small></h3>
+              <ul>
+                <li>É um reprodutor de mídia.</li>
+                <li>Baixado pela Google Play.</li>
+                <li>Não inclui filmes, séries ou canais.</li>
+                <li>Uso sujeito aos termos do aplicativo. <span class="pending">link a confirmar</span></li>
+              </ul>
+            </div>
+            <div class="compare__col compare__col--accent">
+              <h3 class="compare__h"><span>Assinatura GMAX</span><small>serviço de conteúdo</small></h3>
+              <ul>
+                <li>Dá acesso ao conteúdo do plano contratado.</li>
+                <li>Contratada nesta página.</li>
+                <li>Valores conforme o plano e a quantidade de TVs.</li>
+                <li>Uso sujeito aos termos do serviço. <span class="pending">link a confirmar</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DÚVIDAS -->
+    <section class="section" id="duvidas" aria-labelledby="faq-titulo">
+      <div class="wrap faq-wrap">
+        <div class="section-head">
+          <p class="eyebrow">Dúvidas frequentes</p>
+          <h2 id="faq-titulo">Perguntas e respostas</h2>
+          <p class="lead">Não achou sua dúvida? <button class="link" type="button" data-wa="Olá! Tenho uma dúvida que não encontrei no site." data-origem="faq">Pergunte no WhatsApp</button>.</p>
+        </div>
+        <div class="faq" id="faq">
+          <div class="faq__group">
+            <h3 class="faq__gt">Planos e pagamento</h3>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">Como faço para assinar?</button></h4>
+              <div class="faq__a"><div><p>Na seção Planos, escolha a quantidade de TVs e o período e toque em “Assinar”. Você verá o valor total antes de concluir.</p></div></div>
+            </div>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">Quais formas de pagamento são aceitas?</button></h4>
+              <div class="faq__a"><div><p><span class="pending">a confirmar</span> As formas de pagamento serão informadas aqui conforme o checkout atual.</p></div></div>
+            </div>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">Qual a vantagem dos planos mais longos?</button></h4>
+              <div class="faq__a"><div><p>O valor por mês cai. Com 1 TV, o mensal custa R$&nbsp;35, e o anual sai por R$&nbsp;300, o equivalente a R$&nbsp;25 por mês: R$&nbsp;120 a menos no ano.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__group">
+            <h3 class="faq__gt">TVs e aplicativo</h3>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">Quantas TVs posso usar?</button></h4>
+              <div class="faq__a"><div><p>De 1 a 5, conforme o plano escolhido. O preço muda de acordo com a quantidade de TVs.</p></div></div>
+            </div>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">O GMAX Player já vem com conteúdo?</button></h4>
+              <div class="faq__a"><div><p>Não. O GMAX Player é um aplicativo reprodutor. O conteúdo depende da assinatura de um plano GMAX, que tem condições próprias.</p></div></div>
+            </div>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">Em quais aparelhos funciona?</button></h4>
+              <div class="faq__a"><div><p><span class="pending">a confirmar</span> A lista de aparelhos compatíveis será publicada conforme os testes e a ficha oficial do aplicativo.</p></div></div>
+            </div>
+          </div>
+          <div class="faq__group">
+            <h3 class="faq__gt">Teste e suporte</h3>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">Posso testar antes de assinar?</button></h4>
+              <div class="faq__a"><div><p><span class="pending">a confirmar</span> Solicite pelo WhatsApp e nossa equipe informa as condições do teste.</p></div></div>
+            </div>
+            <div class="faq__item">
+              <h4><button class="faq__q" type="button" aria-expanded="false">Como funciona o suporte?</button></h4>
+              <div class="faq__a"><div><p>O atendimento é feito pelo WhatsApp <span class="nowrap" data-wa-exibicao>(31) 99002-9545</span>. <span class="pending">horário a confirmar</span></p></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="cta-final" aria-labelledby="cta-titulo">
+      <div class="wrap cta-final__in">
+        <h2 id="cta-titulo">Pronto para começar?</h2>
+        <p>Escolha seu plano em menos de um minuto.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#planos" data-track="cta_click" data-local="final">Ver planos</a>
+          <button class="btn btn--ghost btn--lg" type="button" data-wa="Olá! Vim pelo site e quero assinar." data-origem="final">Falar no WhatsApp</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__brand">
+        <span class="brand__word">GMAX</span>
+        <p>Filmes, séries e canais em uma só assinatura.</p>
+      </div>
+      <nav class="footer__nav" aria-label="Rodapé">
+        <h2 class="footer__h">Navegação</h2>
+        <ul>
+          <li><a href="#conteudo">Conteúdo</a></li>
+          <li><a href="#planos">Planos</a></li>
+          <li><a href="#app">GMAX Player</a></li>
+          <li><a href="#duvidas">Dúvidas</a></li>
+        </ul>
+      </nav>
+      <div class="footer__nav">
+        <h2 class="footer__h">Atendimento</h2>
+        <ul>
+          <li>WhatsApp <span class="nowrap" data-wa-exibicao>(31) 99002-9545</span></li>
+          <li><span class="pending">a confirmar</span> Horário de atendimento</li>
+        </ul>
+      </div>
+      <div class="footer__nav">
+        <h2 class="footer__h">Legal</h2>
+        <ul>
+          <li><a href="#" aria-disabled="true" data-pendente>Termos de uso</a></li>
+          <li><a href="#" aria-disabled="true" data-pendente>Política de privacidade</a></li>
+          <li><a href="#" aria-disabled="true" data-pendente>Cancelamento e reembolso</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap footer__bottom">
+      <p>© <span id="ano">2026</span> GMAX. <span class="pending">CNPJ a informar</span></p>
+      <p>Google Play é marca da Google LLC.</p>
+    </div>
+  </footer>
+
+  <!-- WhatsApp: botão flutuante (computador) e barra fixa (celular) -->
+  <button class="wa-float" type="button" data-wa="Olá! Vim pelo site da GMAX." data-origem="flutuante" aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+  </button>
+  <div class="mobile-bar" id="mobile-bar">
+    <a class="btn btn--primary" href="#planos" data-track="cta_click" data-local="barra_movel">Ver planos</a>
+    <button class="btn btn--ghost mobile-bar__wa" type="button" data-wa="Olá! Vim pelo site da GMAX." data-origem="barra_movel" aria-label="Falar no WhatsApp">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span>
+    </button>
+  </div>
+
+  <div class="consent" id="consent" hidden role="dialog" aria-labelledby="consent-t" aria-live="polite">
+    <p id="consent-t">Usamos cookies de medição para entender como a página é usada e melhorar sua experiência. <a href="#" data-pendente>Política de privacidade</a>.</p>
+    <div class="consent__actions">
+      <button class="btn btn--ghost btn--sm" type="button" data-consent="nao">Recusar</button>
+      <button class="btn btn--primary btn--sm" type="button" data-consent="sim">Aceitar</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Ícones -->
+  <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 3.2a8.8 8.8 0 0 0-7.6 13.2L3.2 20.8l4.5-1.2A8.8 8.8 0 1 0 12 3.2Z"/><path d="M8.9 8.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.4 1.8 2.4 2.3.2.1.4.1.5 0l.7-.8c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.4.4 0 .5-.2 1.1-.6 1.4-.5.4-1.2.6-2 .4-1.9-.5-4.2-2.4-5.2-4.4-.5-1-.6-2-.3-2.9Z" class="fill"/></symbol>
+    <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 20h8"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M5 3.5v17l14-8.5z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="c-esportes" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M24 15l7 5-2.7 8.2h-8.6L17 20zM24 7v8M31 20l8-3M28.3 28.2 33 36M19.7 28.2 15 36M17 20l-8-3"/></symbol>
+    <symbol id="c-noticias" viewBox="0 0 48 48"><rect x="7" y="10" width="34" height="28" rx="3"/><path d="M13 17h14M13 23h22M13 29h22M31 15h4v5h-4z"/></symbol>
+    <symbol id="c-filmes" viewBox="0 0 48 48"><rect x="7" y="16" width="34" height="23" rx="2"/><path d="m7 16 32-8 1.5 5.5L8.5 21.6M15 14l4 5M24 11.8l4 5M33 9.6l4 5"/></symbol>
+    <symbol id="c-series" viewBox="0 0 48 48"><rect x="6" y="14" width="30" height="20" rx="2"/><path d="M12 9h30v20M20 20v8l7-4z"/></symbol>
+    <symbol id="c-infantil" viewBox="0 0 48 48"><path d="M24 7l4.8 10 11 1.5-8 7.6 2 10.9L24 31.8 14.2 37l2-10.9-8-7.6 11-1.5z"/></symbol>
+    <symbol id="c-entretenimento" viewBox="0 0 48 48"><rect x="18" y="6" width="12" height="20" rx="6"/><path d="M12 22a12 12 0 0 0 24 0M24 34v8M17 42h14"/></symbol>
+    <symbol id="c-documentarios" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c5 5 7 11 7 17s-2 12-7 17c-5-5-7-11-7-17s2-12 7-17z"/></symbol>
+  </svg>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600" role="img" aria-label="Fronteira Sul (ilustração)">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b1212"/><stop offset="1" stop-color="#120404"/></linearGradient>
+<radialGradient id="glow"><stop offset="0" stop-color="#fca5a5" stop-opacity=".55"/><stop offset="1" stop-color="#fca5a5" stop-opacity="0"/></radialGradient>
+<radialGradient id="planeta" cx=".35" cy=".3"><stop offset="0" stop-color="#fca5a5"/><stop offset=".55" stop-color="#3b1212"/><stop offset="1" stop-color="#120404"/></radialGradient>
+<linearGradient id="feixe" x1="0" x2="1"><stop offset="0" stop-color="#fca5a5" stop-opacity=".55"/><stop offset="1" stop-color="#fca5a5" stop-opacity="0"/></linearGradient>
+<linearGradient id="feixe2" x1="1" x2="0"><stop offset="0" stop-color="#fca5a5" stop-opacity=".35"/><stop offset="1" stop-color="#fca5a5" stop-opacity="0"/></linearGradient>
+<linearGradient id="base" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".85"/></linearGradient>
+</defs>
+<rect width="400" height="600" fill="url(#bg)"/>
+<circle cx="200" cy="260" r="120" fill="#fca5a5"/><rect x="60" y="278" width="280" height="3" fill="#3b1212"/><rect x="60" y="293" width="280" height="4.2" fill="#3b1212"/><rect x="60" y="308" width="280" height="5.4" fill="#3b1212"/><rect x="60" y="323" width="280" height="6.6" fill="#3b1212"/><rect x="60" y="338" width="280" height="7.8" fill="#3b1212"/><rect x="60" y="353" width="280" height="9" fill="#3b1212"/><rect x="60" y="368" width="280" height="10.2" fill="#3b1212"/><path d="M0 600 L0 360 Q 163 290.8 254.1 370 T 400 340 L400 600 Z" fill="#120404" opacity="0.8"/><path d="M0 600 L0 410 Q 160.5 330.3 245.2 420 T 400 390 L400 600 Z" fill="#3b1212" opacity="0.8"/><path d="M0 600 L0 460 Q 182.6 377.9 251.1 470 T 400 440 L400 600 Z" fill="#120404" opacity="0.9"/><path d="M0 600 L0 510 Q 179.4 453.3 213.6 520 T 400 490 L400 600 Z" fill="#3b1212" opacity="1"/>
+<rect width="400" height="600" fill="url(#base)"/>
+<text x="200" y="440.9" text-anchor="middle" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" letter-spacing="4" fill="#fca5a5">AÇÃO</text>
+<g font-family="Sora, 'Segoe UI', Arial, sans-serif" font-weight="700" fill="#fff" letter-spacing="1"><text x="200" y="498.9" text-anchor="middle" font-size="54">FRONTEIRA</text><text x="200" y="554" text-anchor="middle" font-size="54">SUL</text></g>
+</svg>
