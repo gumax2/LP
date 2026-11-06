@@ -25,7 +25,7 @@ node tools/build-preview.mjs       # dist/gmax-prototipo.html
 ```
 index.html                 página (HTML semântico, SEO, CSP)
 assets/css/main.css        design system (tokens) + componentes, sem dependências
-assets/js/app.js           comportamento (~17 KB, JS puro, sem framework)
+assets/js/app.js           comportamento (~24 KB sem compressão, JS puro, sem framework)
 assets/fonts/              Sora e Inter hospedadas localmente (licença OFL)
 assets/img/catalogo/       capas ilustrativas originais (SVG, geradas por código)
 data/config.js             modo protótipo, WhatsApp, Play Store, links de checkout (vazio)
