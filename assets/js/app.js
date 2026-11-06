@@ -57,6 +57,24 @@
     } catch (e) { return null; }
   }
 
+  /*
+   * Regra única de exibição de conteúdo de terceiros.
+   * Arte própria (ilustrativo) → basta autorizado: true.
+   * Título/pôster/logotipo oficial → licença completa, disponível no serviço e não vencida.
+   */
+  var HOJE = new Date().toISOString().slice(0, 10);
+  function podeExibir(item) {
+    if (!item || item.autorizado !== true) return false;
+    if (item.ilustrativo === true) return true;
+    var l = item.licenca;
+    return !!(l && l.titular && l.documento && l.disponivelNoServico === true && (!l.validoAte || l.validoAte >= HOJE));
+  }
+
+  var VITRINES = CONFIG.vitrines || { permitirDemonstrativas: true, minimoTitulos: 1 };
+  function exibivelNaVitrine(item) {
+    return podeExibir(item) && (VITRINES.permitirDemonstrativas !== false || item.ilustrativo !== true);
+  }
+
   /* Pausa animações contínuas quando o elemento sai da tela (economia de CPU/bateria). */
   function pausarForaDaTela(no) {
     if (!no || !("IntersectionObserver" in window)) return;
@@ -243,7 +261,7 @@
   /* Hero: parede de capas (computador) e faixa de capas (celular)       */
   /* ------------------------------------------------------------------ */
   function capasAutorizadas() {
-    return (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(function (i) { return i.autorizado === true; });
+    return (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(exibivelNaVitrine);
   }
 
   function iniciarHero() {
@@ -337,24 +355,31 @@
     setTimeout(function () { r.classList.remove("will-animate", "is-in"); }, 1400);
   };
 
+  // Largura exibida da capa em cada tela (o navegador escolhe o arquivo certo do srcset).
+  var TAMANHOS_CAPA = "(min-width: 768px) 210px, 38vw";
+
   function imagemCapa(item) {
+    var f = item.fontes || {};
     var img = el("img", {
       src: item.imagem,
-      alt: (item.ilustrativo ? "Capa demonstrativa: " : "Capa: ") + item.titulo,
-      width: "400", height: "600", loading: "lazy", decoding: "async",
+      alt: (item.ilustrativo ? "Capa demonstrativa: " : "Pôster de ") + item.titulo,
+      width: String(item.largura || 400), height: String(item.altura || 600),
+      loading: "lazy", decoding: "async",
     });
-    // Materiais oficiais: aceita AVIF/WebP com fallback (campo opcional `fontes`)
-    var f = item.fontes;
-    if (!f || (!f.avif && !f.webp)) return img;
+    if (f.jpg) { img.setAttribute("srcset", f.jpg); img.setAttribute("sizes", TAMANHOS_CAPA); }
+    if (!f.avif && !f.webp) return img;
+    // Materiais oficiais: AVIF → WebP → JPG, cada um em vários tamanhos
     return el("picture", null, [
-      f.avif ? el("source", { type: "image/avif", srcset: f.avif }) : null,
-      f.webp ? el("source", { type: "image/webp", srcset: f.webp }) : null,
+      f.avif ? el("source", { type: "image/avif", srcset: f.avif, sizes: TAMANHOS_CAPA }) : null,
+      f.webp ? el("source", { type: "image/webp", srcset: f.webp, sizes: TAMANHOS_CAPA }) : null,
       img,
     ]);
   }
 
   function cartaoCapa(item) {
     var frame = el("div", { class: "poster__frame" }, [imagemCapa(item)]);
+    // preserva a proporção original do pôster oficial (sem cortar)
+    if (item.largura && item.altura) frame.style.aspectRatio = item.largura + " / " + item.altura;
     if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Demonstrativo" }));
     return el("li", null, [
       el("figure", { class: "poster" }, [
@@ -407,7 +432,8 @@
     ["filmes", "series"].forEach(function (tipo) {
       var raiz = $('.rail[data-rail="' + tipo + '"]');
       if (!raiz) return;
-      var itens = (CATALOGO[tipo] || []).filter(function (i) { return i.autorizado === true; });
+      var itens = (CATALOGO[tipo] || []).filter(exibivelNaVitrine);
+      if (itens.length < (VITRINES.minimoTitulos || 1)) { raiz.hidden = true; return; }
       var car = new Carrossel(raiz);
       car.preencher(itens.map(cartaoCapa));
       animarAoEntrar(car);
@@ -428,6 +454,63 @@
       var car = new Carrossel(raizCanais);
       car.preencher((CATALOGO.canais || []).map(cartaoCategoria));
       animarAoEntrar(car);
+    }
+    iniciarCanaisDestaque();
+
+    // o aviso de capas demonstrativas só aparece se houver alguma na tela
+    var aviso = $(".disclaimer");
+    if (aviso) aviso.hidden = !$(".poster__badge");
+  }
+
+  /* Canais em destaque: logotipos oficiais em cartões padronizados, por categoria. */
+  function iniciarCanaisDestaque() {
+    var secao = $("#canais-destaque"), grade = $("#logo-grid"), chips = $("#canais-chips");
+    if (!secao || !grade) return;
+    var categorias = CATALOGO.canais || [];
+    var porId = {};
+    categorias.forEach(function (c) { porId[c.id] = c; });
+    var canais = (CATALOGO.destaques || []).filter(function (c) { return podeExibir(c) && porId[c.categoria]; });
+    var demonstracao = false;
+
+    if (!canais.length) {
+      if (!CONFIG.modoPrototipo) return; // sem logotipos autorizados, a seção não existe no site
+      // Protótipo: mostra só o LAYOUT, com espaços reservados neutros (nenhum canal real).
+      demonstracao = true;
+      canais = categorias.map(function (c) { return { id: "ex-" + c.id, categoria: c.id }; })
+        .concat(categorias.slice(0, 3).map(function (c) { return { id: "ex2-" + c.id, categoria: c.id }; }));
+      $(".channels__demo", secao).hidden = false;
+    }
+
+    function tile(canal) {
+      var cat = porId[canal.categoria];
+      var caixa = el("span", { class: "logo-tile__img" });
+      if (demonstracao) {
+        caixa.appendChild(icone("c-" + cat.icone, "logo-tile__ph"));
+        caixa.appendChild(el("span", { class: "logo-tile__phl", text: "Logotipo oficial" }));
+      } else {
+        var img = el("img", { src: canal.logo, alt: "Logotipo " + canal.nome, loading: "lazy", decoding: "async", width: "160", height: "90" });
+        var lf = canal.logoFontes;
+        if (lf && lf.png) { img.setAttribute("srcset", lf.png); img.setAttribute("sizes", "160px"); }
+        caixa.appendChild(lf && lf.webp ? el("picture", null, [el("source", { type: "image/webp", srcset: lf.webp, sizes: "160px" }), img]) : img);
+      }
+      var li = el("li", { class: "logo-tile" + (demonstracao ? " logo-tile--demo" : ""), "data-cat": canal.categoria }, [
+        caixa,
+        el("span", { class: "logo-tile__n", text: demonstracao ? "Nome do canal" : canal.nome }),
+        el("span", { class: "logo-tile__c", text: cat.nome }),
+      ]);
+      if (/^#[0-9a-f]{3,8}$/i.test(cat.tom || "")) li.style.setProperty("--tom", cat.tom);
+      return li;
+    }
+    canais.forEach(function (c) { grade.appendChild(tile(c)); });
+    secao.hidden = false;
+
+    if (chips) {
+      var usadas = categorias.filter(function (c) { return canais.some(function (x) { return x.categoria === c.id; }); });
+      filtros(chips, usadas.map(function (c) { return c.nome; }), "Todas", function (nome) {
+        var cat = usadas.filter(function (c) { return c.nome === nome; })[0];
+        $$(".logo-tile", grade).forEach(function (t) { t.hidden = !!cat && t.getAttribute("data-cat") !== cat.id; });
+        track("filtro_canais", { categoria: nome || "todas" });
+      });
     }
   }
 

@@ -71,6 +71,13 @@ const toastTexto = (page) => page.locator("#toast").innerText();
     await page.click('[data-chips="filmes"] .chip[data-v=""]');
     check("filtro 'Todos' restaura 12", (await page.locator('[data-rail="filmes"] .poster').count()) === 12);
 
+    await page.locator("#canais-destaque").scrollIntoViewIfNeeded();
+    check("canais em destaque: só espaços de exemplo, nenhum canal real", (await page.locator(".logo-tile").count()) === (await page.locator(".logo-tile--demo").count()) && (await page.locator(".logo-tile img").count()) === 0);
+    check("canais em destaque: aviso 'exemplo de layout'", await page.locator(".channels__demo").isVisible());
+    await page.click('#canais-chips .chip[data-v="Esportes"]');
+    check("filtro de canais por categoria", (await page.locator(".logo-tile:visible").count()) === (await page.locator('.logo-tile[data-cat="esportes"]').count()));
+    await page.click('#canais-chips .chip[data-v=""]');
+
     console.log("  — planos: 5 TVs × 4 períodos");
     await page.locator("#planos").scrollIntoViewIfNeeded();
     check("aviso 'pendente de validação' visível", await page.locator("#planos-status").isVisible());

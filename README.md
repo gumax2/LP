@@ -20,9 +20,17 @@ node tools/gerar-ilustracoes.mjs   # capas ilustrativas a partir de data/catalog
 node tools/build-preview.mjs       # dist/gmax-prototipo.html
 ```
 
+Materiais oficiais (pôsteres e logotipos autorizados), ver `docs/MATERIAIS.md`:
+```bash
+npm install                        # uma vez (instala o otimizador de imagens)
+npm run imagens                    # AVIF/WebP/JPG a partir de materiais/recebidos/
+npm run validar                    # bloqueia item sem licença, vencido ou ausente
+```
+
 Testes (com o servidor local rodando na porta 8765):
 ```bash
 node tools/testes/funcional.cjs http://localhost:8765/
+node tools/testes/materiais-oficiais.mjs   # fluxo de materiais oficiais (cópia temporária)
 ```
 
 ## Estrutura
@@ -39,9 +47,12 @@ data/catalogo.js           filmes, séries e categorias das vitrines
 data/avaliacoes.js         avaliações reais e autorizadas (vazio: seção oculta)
 tools/testes/funcional.cjs testes automatizados (Playwright)
 tools/gerar-ilustracoes.mjs
+tools/otimizar-imagens.mjs  pôsteres/logotipos autorizados → AVIF/WebP/JPG
+tools/validar-catalogo.mjs  regra de licença antes de publicar
 tools/build-preview.mjs
 dist/                      prévias em arquivo único (geradas)
 docs/PENDENCIAS.md         o que depende de arquivos/informações da GMAX
+docs/MATERIAIS.md          pôsteres e logotipos oficiais: o que falta e como enviar
 docs/IMPLANTACAO.md        checklist de testes e implantação
 ```
 
@@ -50,7 +61,9 @@ docs/IMPLANTACAO.md        checklist de testes e implantação
 | Quero… | Edite |
 |---|---|
 | Mudar preços | `data/planos.js`. Economia, valor mensal, destaque, hero e FAQ são recalculados sozinhos. |
-| Trocar/incluir capas | `data/catalogo.js` (instruções no topo do arquivo) |
+| Trocar capas por pôsteres oficiais | `docs/MATERIAIS.md` (passo a passo) |
+| Incluir logotipos de canais | `data/catalogo.js` → `destaques` (com licença) |
+| Ocultar capas demonstrativas | `data/config.js` → `vitrines.permitirDemonstrativas: false` |
 | Mudar categorias de canais | `data/catalogo.js` → `canais` |
 | Publicar avaliações reais | `data/avaliacoes.js` (somente com autorização) |
 | Ligar o checkout | `data/config.js` → `checkout` e `modoPrototipo: false` (somente após aprovação) |
@@ -60,5 +73,5 @@ docs/IMPLANTACAO.md        checklist de testes e implantação
 - `modoPrototipo: true` bloqueia qualquer saída para checkout ou WhatsApp.
 - Nenhum segredo no frontend: `data/config.js` é público por natureza.
 - Conteúdo dinâmico é inserido com `textContent` (sem `innerHTML`) para evitar XSS.
-- Vitrines exibem somente itens com `autorizado: true`.
+- Títulos, pôsteres e logotipos de terceiros só aparecem com licença completa, válida e disponível no serviço.
 - Nada é publicado em produção sem autorização expressa.

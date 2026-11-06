@@ -29,6 +29,19 @@ window.GMAX_CONFIG = Object.freeze({
     // "1-mensal": "https://…",
   },
 
+  /*
+   * Vitrines de filmes e séries.
+   * permitirDemonstrativas: true  → capas demonstrativas aparecem (com selo) até chegarem as oficiais.
+   *                          false → só materiais oficiais licenciados.
+   * minimoTitulos: abaixo desse número de títulos exibíveis, a vitrine fica oculta
+   *                (evita uma vitrine "vazia" com 2 ou 3 capas).
+   * Opção B de docs/MATERIAIS.md = { permitirDemonstrativas: false, minimoTitulos: 8 }.
+   */
+  vitrines: {
+    permitirDemonstrativas: true,
+    minimoTitulos: 6,
+  },
+
   /* Medição: só dispara depois do consentimento do visitante (LGPD). */
   analytics: {
     exigirConsentimento: true,

@@ -1,0 +1,16 @@
+{
+  "name": "gmax-landing",
+  "private": true,
+  "type": "module",
+  "description": "Landing page GMAX — protótipo",
+  "scripts": {
+    "ilustracoes": "node tools/gerar-ilustracoes.mjs",
+    "imagens": "node tools/otimizar-imagens.mjs",
+    "validar": "node tools/validar-catalogo.mjs",
+    "preview": "node tools/build-preview.mjs",
+    "testar": "node tools/testes/funcional.cjs"
+  },
+  "devDependencies": {
+    "sharp": "0.33.5"
+  }
+}

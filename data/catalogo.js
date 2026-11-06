@@ -1,15 +1,31 @@
 /*
- * Catálogo das vitrines.
+ * Catálogo das vitrines: filmes, séries, categorias e canais em destaque.
  *
- * REGRAS
- * - Só aparecem itens com `autorizado: true` (direito de divulgação confirmado).
- * - `ilustrativo: true` marca artes provisórias; a página exibe o selo "Demonstrativo".
- * - Os títulos abaixo são FICTÍCIOS e as artes foram geradas por
- *   tools/gerar-ilustracoes.mjs a partir do campo `arte`. Substitua por
- *   materiais oficiais e autorizados antes da publicação.
- * - Para trocar uma capa: coloque a imagem (2:3, ex. 400×600, WebP/AVIF/JPG)
- *   em assets/img/catalogo/, aponte `imagem` para ela, remova `arte` e
- *   defina `ilustrativo: false`.
+ * REGRA DE EXIBIÇÃO (aplicada pela página e por `npm run validar`)
+ * Um item OFICIAL (título real, pôster ou logotipo de terceiros) só aparece se tiver:
+ *   autorizado: true
+ *   licenca: {
+ *     tipo: "contrato-distribuicao" | "kit-divulgacao" | "autorizacao-escrita",
+ *     titular: "Quem concedeu o direito (estúdio, distribuidora, canal)",
+ *     documento: "Referência interna do contrato/e-mail (não publique o documento)",
+ *     disponivelNoServico: true,   // a GMAX oferece este título/canal legalmente
+ *     validoAte: "AAAA-MM-DD"      // opcional; vencida → o item some sozinho
+ *   }
+ * Itens `ilustrativo: true` são artes próprias da GMAX (selo "Demonstrativo").
+ *
+ * COMO TROCAR UMA ILUSTRAÇÃO POR UM PÔSTER OFICIAL
+ * 1. Salve o arquivo autorizado em materiais/recebidos/filmes/<id>.jpg (ou series/).
+ * 2. Rode `npm run imagens`: gera AVIF/WebP/JPG em 4 tamanhos.
+ * 3. Substitua o item: título real, campos de imagem gerados, `ilustrativo: false`
+ *    e o bloco `licenca`. Remova `arte`.
+ * 4. Rode `npm run validar`.
+ *
+ * Exemplo de item oficial (MODELO, não é um título real):
+ * { id: "nome-do-filme", titulo: "Nome do Filme", genero: "Drama",
+ *   imagem: "assets/img/oficial/filmes/nome-do-filme-360.jpg", largura: 1000, altura: 1500,
+ *   fontes: { avif: "… 180w, … 360w", webp: "…", jpg: "…" },
+ *   ilustrativo: false, autorizado: true,
+ *   licenca: { tipo: "contrato-distribuicao", titular: "Distribuidora X", documento: "Contrato 2026/014", disponivelNoServico: true } }
  */
 window.GMAX_CATALOGO = Object.freeze({
   filmes: [
@@ -50,4 +66,12 @@ window.GMAX_CATALOGO = Object.freeze({
     { id: "entretenimento", nome: "Entretenimento", descricao: "Variedades, reality e talk shows.", icone: "entretenimento", tom: "#fb923c" },
     { id: "documentarios", nome: "Documentários", descricao: "Natureza, história e ciência.", icone: "documentarios", tom: "#4ade80" },
   ],
+  /*
+   * Canais em destaque (logotipos oficiais). VAZIO até haver autorização dos titulares.
+   * Modelo: { id: "canal-x", nome: "Canal X", categoria: "esportes",
+   *           logo: "assets/img/oficial/canais/canal-x.svg", autorizado: true,
+   *           licenca: { tipo: "autorizacao-escrita", titular: "…", documento: "…", disponivelNoServico: true } }
+   * `categoria` deve ser um `id` da lista `canais` acima.
+   */
+  destaques: [],
 });

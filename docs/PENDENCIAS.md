@@ -32,12 +32,17 @@ Para responder dúvidas de clientes sem improviso, preciso da sua decisão sobre
 
 Até a decisão, esses pontos **não** aparecem na página.
 
-## C. Melhoram a conversão (não bloqueiam)
+## C. Vitrines com pôsteres, títulos e logotipos oficiais
+
+Detalhado em **`docs/MATERIAIS.md`**. Resumo:
+- lista dos filmes, séries e canais que a GMAX pode oferecer **e** divulgar legalmente;
+- para cada um: arquivo oficial (pôster 2:3 ≥ 1000×1500 px ou logotipo SVG/PNG), titular do direito, referência do contrato ou autorização, validade;
+- sua decisão entre as opções A, B ou C (recomendo B).
+
+## D. Melhoram a conversão (não bloqueiam)
 
 | # | Item | Onde entra |
 |---|---|---|
-| 12 | Capas e títulos com divulgação comercial autorizada (AVIF/WebP, 2:3) | `data/catalogo.js` (campo `fontes`) |
-| 13 | Lista oficial de canais por categoria, se a divulgação for autorizada | vitrine de categorias |
 | 14 | Existe teste? Quais condições? | FAQ “Teste” |
 | 15 | Horário de atendimento | FAQ, rodapé |
 | 16 | Avaliações reais com autorização por escrito | `data/avaliacoes.js` (a seção aparece sozinha) |

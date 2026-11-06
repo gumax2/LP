@@ -330,6 +330,35 @@ button { font: inherit; color: inherit; }
   .cat:hover .cat__bg { transform: scale(1.15) rotate(8deg); opacity: 0.2; }
 }
 
+/* ---------- Canais em destaque (logotipos) ---------- */
+.channels { margin-top: 48px; }
+.channels__demo { color: var(--muted); font-size: 0.86rem; margin: -6px 0 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.logo-grid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 560px) { .logo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .logo-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; } }
+.logo-tile {
+  --tom: var(--accent);
+  display: grid; gap: 4px; padding: 12px; border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line);
+  transition: transform 0.4s var(--ease), border-color 0.3s, box-shadow 0.4s var(--ease);
+}
+.logo-tile__img {
+  aspect-ratio: 16 / 9; display: grid; place-items: center; border-radius: 10px; margin-bottom: 6px; overflow: hidden;
+  /* fundo neutro claro: logotipos oficiais costumam ser desenhados para fundo branco */
+  background: radial-gradient(120% 100% at 50% 0%, #ffffff, #e9eef7);
+}
+.logo-tile__img img { max-width: 72%; max-height: 62%; width: auto; height: auto; object-fit: contain; }
+.logo-tile__n { font-weight: 600; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.logo-tile__c { font-size: 0.78rem; color: var(--subtle); display: flex; align-items: center; gap: 6px; }
+.logo-tile__c::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--tom); }
+.logo-tile--demo .logo-tile__img { background: rgba(255, 255, 255, 0.03); border: 1px dashed var(--line-strong); grid-auto-flow: row; gap: 6px; align-content: center; }
+.logo-tile__ph { width: 30px; height: 30px; fill: none; stroke: var(--tom); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.8; }
+.logo-tile__phl { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--subtle); }
+.logo-tile--demo .logo-tile__n { color: var(--subtle); font-weight: 500; }
+@media (hover: hover) {
+  .logo-tile:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--tom) 55%, transparent); box-shadow: 0 20px 40px -26px color-mix(in srgb, var(--tom) 80%, transparent); }
+}
+
 /* ---------- Filtros (chips) ---------- */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .chip {
@@ -815,7 +844,18 @@ button { font: inherit; color: inherit; }
         <div class="wrap"><div class="rail__progress" aria-hidden="true"><span></span></div></div>
       </div>
 
-      <p class="wrap disclaimer">Capas e títulos demonstrativos, criados pela GMAX para este protótipo. A vitrine oficial usará somente materiais com divulgação autorizada.</p>
+      <div class="wrap channels" id="canais-destaque" hidden>
+        <div class="rail__head">
+          <div class="rail__intro">
+            <h3 class="rail__title">Canais em destaque</h3>
+            <div class="chips" role="toolbar" aria-label="Filtrar canais por categoria" id="canais-chips"></div>
+          </div>
+        </div>
+        <p class="channels__demo" hidden><span class="pending">exemplo de layout</span> Os espaços abaixo receberão os logotipos oficiais dos canais, somente com autorização dos titulares.</p>
+        <ul class="logo-grid" id="logo-grid"></ul>
+      </div>
+
+      <p class="wrap disclaimer">Capas e títulos demonstrativos, criados pela GMAX para este protótipo. Pôsteres, títulos e logotipos oficiais serão exibidos somente com autorização de divulgação dos titulares.</p>
     </section>
 
     <!-- 3. PLANOS -->
@@ -1241,6 +1281,19 @@ window.GMAX_CONFIG = Object.freeze({
     // "1-mensal": "https://…",
   },
 
+  /*
+   * Vitrines de filmes e séries.
+   * permitirDemonstrativas: true  → capas demonstrativas aparecem (com selo) até chegarem as oficiais.
+   *                          false → só materiais oficiais licenciados.
+   * minimoTitulos: abaixo desse número de títulos exibíveis, a vitrine fica oculta
+   *                (evita uma vitrine "vazia" com 2 ou 3 capas).
+   * Opção B de docs/MATERIAIS.md = { permitirDemonstrativas: false, minimoTitulos: 8 }.
+   */
+  vitrines: {
+    permitirDemonstrativas: true,
+    minimoTitulos: 6,
+  },
+
   /* Medição: só dispara depois do consentimento do visitante (LGPD). */
   analytics: {
     exigirConsentimento: true,
@@ -1285,17 +1338,33 @@ window.GMAX_PLANOS = Object.freeze({
 </script>
 <script>
 /*
- * Catálogo das vitrines.
+ * Catálogo das vitrines: filmes, séries, categorias e canais em destaque.
  *
- * REGRAS
- * - Só aparecem itens com `autorizado: true` (direito de divulgação confirmado).
- * - `ilustrativo: true` marca artes provisórias; a página exibe o selo "Demonstrativo".
- * - Os títulos abaixo são FICTÍCIOS e as artes foram geradas por
- *   tools/gerar-ilustracoes.mjs a partir do campo `arte`. Substitua por
- *   materiais oficiais e autorizados antes da publicação.
- * - Para trocar uma capa: coloque a imagem (2:3, ex. 400×600, WebP/AVIF/JPG)
- *   em assets/img/catalogo/, aponte `imagem` para ela, remova `arte` e
- *   defina `ilustrativo: false`.
+ * REGRA DE EXIBIÇÃO (aplicada pela página e por `npm run validar`)
+ * Um item OFICIAL (título real, pôster ou logotipo de terceiros) só aparece se tiver:
+ *   autorizado: true
+ *   licenca: {
+ *     tipo: "contrato-distribuicao" | "kit-divulgacao" | "autorizacao-escrita",
+ *     titular: "Quem concedeu o direito (estúdio, distribuidora, canal)",
+ *     documento: "Referência interna do contrato/e-mail (não publique o documento)",
+ *     disponivelNoServico: true,   // a GMAX oferece este título/canal legalmente
+ *     validoAte: "AAAA-MM-DD"      // opcional; vencida → o item some sozinho
+ *   }
+ * Itens `ilustrativo: true` são artes próprias da GMAX (selo "Demonstrativo").
+ *
+ * COMO TROCAR UMA ILUSTRAÇÃO POR UM PÔSTER OFICIAL
+ * 1. Salve o arquivo autorizado em materiais/recebidos/filmes/<id>.jpg (ou series/).
+ * 2. Rode `npm run imagens`: gera AVIF/WebP/JPG em 4 tamanhos.
+ * 3. Substitua o item: título real, campos de imagem gerados, `ilustrativo: false`
+ *    e o bloco `licenca`. Remova `arte`.
+ * 4. Rode `npm run validar`.
+ *
+ * Exemplo de item oficial (MODELO, não é um título real):
+ * { id: "nome-do-filme", titulo: "Nome do Filme", genero: "Drama",
+ *   imagem: "assets/img/oficial/filmes/nome-do-filme-360.jpg", largura: 1000, altura: 1500,
+ *   fontes: { avif: "… 180w, … 360w", webp: "…", jpg: "…" },
+ *   ilustrativo: false, autorizado: true,
+ *   licenca: { tipo: "contrato-distribuicao", titular: "Distribuidora X", documento: "Contrato 2026/014", disponivelNoServico: true } }
  */
 window.GMAX_CATALOGO = Object.freeze({
   filmes: [
@@ -1336,6 +1405,14 @@ window.GMAX_CATALOGO = Object.freeze({
     { id: "entretenimento", nome: "Entretenimento", descricao: "Variedades, reality e talk shows.", icone: "entretenimento", tom: "#fb923c" },
     { id: "documentarios", nome: "Documentários", descricao: "Natureza, história e ciência.", icone: "documentarios", tom: "#4ade80" },
   ],
+  /*
+   * Canais em destaque (logotipos oficiais). VAZIO até haver autorização dos titulares.
+   * Modelo: { id: "canal-x", nome: "Canal X", categoria: "esportes",
+   *           logo: "assets/img/oficial/canais/canal-x.svg", autorizado: true,
+   *           licenca: { tipo: "autorizacao-escrita", titular: "…", documento: "…", disponivelNoServico: true } }
+   * `categoria` deve ser um `id` da lista `canais` acima.
+   */
+  destaques: [],
 });
 
 </script>
@@ -1419,6 +1496,24 @@ window.GMAX_AVALIACOES = Object.freeze([]);
       if (valor === undefined) return window.localStorage.getItem(chave);
       window.localStorage.setItem(chave, valor);
     } catch (e) { return null; }
+  }
+
+  /*
+   * Regra única de exibição de conteúdo de terceiros.
+   * Arte própria (ilustrativo) → basta autorizado: true.
+   * Título/pôster/logotipo oficial → licença completa, disponível no serviço e não vencida.
+   */
+  var HOJE = new Date().toISOString().slice(0, 10);
+  function podeExibir(item) {
+    if (!item || item.autorizado !== true) return false;
+    if (item.ilustrativo === true) return true;
+    var l = item.licenca;
+    return !!(l && l.titular && l.documento && l.disponivelNoServico === true && (!l.validoAte || l.validoAte >= HOJE));
+  }
+
+  var VITRINES = CONFIG.vitrines || { permitirDemonstrativas: true, minimoTitulos: 1 };
+  function exibivelNaVitrine(item) {
+    return podeExibir(item) && (VITRINES.permitirDemonstrativas !== false || item.ilustrativo !== true);
   }
 
   /* Pausa animações contínuas quando o elemento sai da tela (economia de CPU/bateria). */
@@ -1607,7 +1702,7 @@ window.GMAX_AVALIACOES = Object.freeze([]);
   /* Hero: parede de capas (computador) e faixa de capas (celular)       */
   /* ------------------------------------------------------------------ */
   function capasAutorizadas() {
-    return (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(function (i) { return i.autorizado === true; });
+    return (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(exibivelNaVitrine);
   }
 
   function iniciarHero() {
@@ -1701,24 +1796,31 @@ window.GMAX_AVALIACOES = Object.freeze([]);
     setTimeout(function () { r.classList.remove("will-animate", "is-in"); }, 1400);
   };
 
+  // Largura exibida da capa em cada tela (o navegador escolhe o arquivo certo do srcset).
+  var TAMANHOS_CAPA = "(min-width: 768px) 210px, 38vw";
+
   function imagemCapa(item) {
+    var f = item.fontes || {};
     var img = el("img", {
       src: item.imagem,
-      alt: (item.ilustrativo ? "Capa demonstrativa: " : "Capa: ") + item.titulo,
-      width: "400", height: "600", loading: "lazy", decoding: "async",
+      alt: (item.ilustrativo ? "Capa demonstrativa: " : "Pôster de ") + item.titulo,
+      width: String(item.largura || 400), height: String(item.altura || 600),
+      loading: "lazy", decoding: "async",
     });
-    // Materiais oficiais: aceita AVIF/WebP com fallback (campo opcional `fontes`)
-    var f = item.fontes;
-    if (!f || (!f.avif && !f.webp)) return img;
+    if (f.jpg) { img.setAttribute("srcset", f.jpg); img.setAttribute("sizes", TAMANHOS_CAPA); }
+    if (!f.avif && !f.webp) return img;
+    // Materiais oficiais: AVIF → WebP → JPG, cada um em vários tamanhos
     return el("picture", null, [
-      f.avif ? el("source", { type: "image/avif", srcset: f.avif }) : null,
-      f.webp ? el("source", { type: "image/webp", srcset: f.webp }) : null,
+      f.avif ? el("source", { type: "image/avif", srcset: f.avif, sizes: TAMANHOS_CAPA }) : null,
+      f.webp ? el("source", { type: "image/webp", srcset: f.webp, sizes: TAMANHOS_CAPA }) : null,
       img,
     ]);
   }
 
   function cartaoCapa(item) {
     var frame = el("div", { class: "poster__frame" }, [imagemCapa(item)]);
+    // preserva a proporção original do pôster oficial (sem cortar)
+    if (item.largura && item.altura) frame.style.aspectRatio = item.largura + " / " + item.altura;
     if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Demonstrativo" }));
     return el("li", null, [
       el("figure", { class: "poster" }, [
@@ -1771,7 +1873,8 @@ window.GMAX_AVALIACOES = Object.freeze([]);
     ["filmes", "series"].forEach(function (tipo) {
       var raiz = $('.rail[data-rail="' + tipo + '"]');
       if (!raiz) return;
-      var itens = (CATALOGO[tipo] || []).filter(function (i) { return i.autorizado === true; });
+      var itens = (CATALOGO[tipo] || []).filter(exibivelNaVitrine);
+      if (itens.length < (VITRINES.minimoTitulos || 1)) { raiz.hidden = true; return; }
       var car = new Carrossel(raiz);
       car.preencher(itens.map(cartaoCapa));
       animarAoEntrar(car);
@@ -1792,6 +1895,63 @@ window.GMAX_AVALIACOES = Object.freeze([]);
       var car = new Carrossel(raizCanais);
       car.preencher((CATALOGO.canais || []).map(cartaoCategoria));
       animarAoEntrar(car);
+    }
+    iniciarCanaisDestaque();
+
+    // o aviso de capas demonstrativas só aparece se houver alguma na tela
+    var aviso = $(".disclaimer");
+    if (aviso) aviso.hidden = !$(".poster__badge");
+  }
+
+  /* Canais em destaque: logotipos oficiais em cartões padronizados, por categoria. */
+  function iniciarCanaisDestaque() {
+    var secao = $("#canais-destaque"), grade = $("#logo-grid"), chips = $("#canais-chips");
+    if (!secao || !grade) return;
+    var categorias = CATALOGO.canais || [];
+    var porId = {};
+    categorias.forEach(function (c) { porId[c.id] = c; });
+    var canais = (CATALOGO.destaques || []).filter(function (c) { return podeExibir(c) && porId[c.categoria]; });
+    var demonstracao = false;
+
+    if (!canais.length) {
+      if (!CONFIG.modoPrototipo) return; // sem logotipos autorizados, a seção não existe no site
+      // Protótipo: mostra só o LAYOUT, com espaços reservados neutros (nenhum canal real).
+      demonstracao = true;
+      canais = categorias.map(function (c) { return { id: "ex-" + c.id, categoria: c.id }; })
+        .concat(categorias.slice(0, 3).map(function (c) { return { id: "ex2-" + c.id, categoria: c.id }; }));
+      $(".channels__demo", secao).hidden = false;
+    }
+
+    function tile(canal) {
+      var cat = porId[canal.categoria];
+      var caixa = el("span", { class: "logo-tile__img" });
+      if (demonstracao) {
+        caixa.appendChild(icone("c-" + cat.icone, "logo-tile__ph"));
+        caixa.appendChild(el("span", { class: "logo-tile__phl", text: "Logotipo oficial" }));
+      } else {
+        var img = el("img", { src: canal.logo, alt: "Logotipo " + canal.nome, loading: "lazy", decoding: "async", width: "160", height: "90" });
+        var lf = canal.logoFontes;
+        if (lf && lf.png) { img.setAttribute("srcset", lf.png); img.setAttribute("sizes", "160px"); }
+        caixa.appendChild(lf && lf.webp ? el("picture", null, [el("source", { type: "image/webp", srcset: lf.webp, sizes: "160px" }), img]) : img);
+      }
+      var li = el("li", { class: "logo-tile" + (demonstracao ? " logo-tile--demo" : ""), "data-cat": canal.categoria }, [
+        caixa,
+        el("span", { class: "logo-tile__n", text: demonstracao ? "Nome do canal" : canal.nome }),
+        el("span", { class: "logo-tile__c", text: cat.nome }),
+      ]);
+      if (/^#[0-9a-f]{3,8}$/i.test(cat.tom || "")) li.style.setProperty("--tom", cat.tom);
+      return li;
+    }
+    canais.forEach(function (c) { grade.appendChild(tile(c)); });
+    secao.hidden = false;
+
+    if (chips) {
+      var usadas = categorias.filter(function (c) { return canais.some(function (x) { return x.categoria === c.id; }); });
+      filtros(chips, usadas.map(function (c) { return c.nome; }), "Todas", function (nome) {
+        var cat = usadas.filter(function (c) { return c.nome === nome; })[0];
+        $$(".logo-tile", grade).forEach(function (t) { t.hidden = !!cat && t.getAttribute("data-cat") !== cat.id; });
+        track("filtro_canais", { categoria: nome || "todas" });
+      });
     }
   }
 
