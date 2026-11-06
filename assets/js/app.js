@@ -9,6 +9,7 @@
   var CONFIG = window.GMAX_CONFIG || {};
   var PLANOS = window.GMAX_PLANOS;
   var CATALOGO = window.GMAX_CATALOGO || {};
+  var AVALIACOES = window.GMAX_AVALIACOES || [];
   var reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ------------------------------------------------------------------ */
@@ -26,7 +27,9 @@
         else n.setAttribute(k, attrs[k]);
       });
     }
-    (filhos || []).forEach(function (f) { if (f) n.appendChild(f); });
+    (filhos || []).forEach(function (f) {
+      if (f) n.appendChild(typeof f === "string" ? document.createTextNode(f) : f);
+    });
     return n;
   }
 
@@ -42,15 +45,24 @@
     return s;
   }
 
-  var brl = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  var brl2 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  function dinheiro(v) { return Number.isInteger(v) ? brl.format(v) : brl2.format(v); }
+  var fmt2 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function reais(v) { return "R$\u00a0" + fmt2.format(v); } // espaço não separável: "R$" nunca fica sozinho na linha
+  function tvsTexto(n) { return n + (n > 1 ? " TVs" : " TV"); }
+  function mesesTexto(n) { return n === 1 ? "1 mês" : n + " meses"; }
 
   function storage(chave, valor) {
     try {
       if (valor === undefined) return window.localStorage.getItem(chave);
       window.localStorage.setItem(chave, valor);
     } catch (e) { return null; }
+  }
+
+  /* Pausa animações contínuas quando o elemento sai da tela (economia de CPU/bateria). */
+  function pausarForaDaTela(no) {
+    if (!no || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(function (en) {
+      no.classList.toggle("is-paused", !en[0].isIntersecting);
+    }).observe(no);
   }
 
   /* ------------------------------------------------------------------ */
@@ -61,10 +73,9 @@
   window.dataLayer = window.dataLayer || [];
 
   function track(evento, params) {
-    var dados = Object.assign({ event: evento }, params || {});
     if (analytics.depurarNoConsole) console.info("[GMAX evento]", evento, params || {});
     if (analytics.exigirConsentimento && consentimento !== "sim") return;
-    window.dataLayer.push(dados);
+    window.dataLayer.push(Object.assign({ event: evento }, params || {}));
     if (typeof window.fbq === "function") window.fbq("trackCustom", evento, params || {});
   }
   window.GMAX_TRACK = track;
@@ -72,13 +83,14 @@
   function iniciarConsentimento() {
     var caixa = $("#consent");
     if (!caixa || !analytics.exigirConsentimento || consentimento) return;
-    // aparece só depois que o visitante começa a rolar (ou após 8 s),
-    // para não cobrir a primeira tela e os botões principais
+    // Aparece só depois que o visitante começa a rolar (ou após 8 s),
+    // para não cobrir a primeira tela nem os botões principais.
     var mostrado = false;
     function mostrar() {
       if (mostrado) return;
       mostrado = true;
       caixa.hidden = false;
+      document.body.classList.add("has-consent");
       window.removeEventListener("scroll", aoRolar);
     }
     function aoRolar() { if (window.scrollY > 320) mostrar(); }
@@ -90,6 +102,7 @@
       consentimento = b.getAttribute("data-consent");
       storage("gmax_consent", consentimento);
       caixa.hidden = true;
+      document.body.classList.remove("has-consent");
       track("consent_update", { consentimento: consentimento });
     });
   }
@@ -103,25 +116,25 @@
     if (!t) return;
     t.textContent = "";
     t.appendChild(el("strong", { text: titulo }));
-    if (detalhe) t.appendChild(el("code", { text: detalhe }));
+    if (detalhe) t.appendChild(el("span", { class: "toast__d", text: detalhe }));
     t.hidden = false;
-    t.style.animation = "none"; void t.offsetWidth; t.style.animation = "";
+    t.classList.remove("is-in"); void t.offsetWidth; t.classList.add("is-in");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.hidden = true; }, 4200);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 4500);
   }
 
   /* ------------------------------------------------------------------ */
   /* WhatsApp e contratação                                              */
   /* ------------------------------------------------------------------ */
   function linkWhatsApp(mensagem) {
-    var numero = (CONFIG.whatsapp && CONFIG.whatsapp.numero || "").replace(/\D/g, "");
+    var numero = String(CONFIG.whatsapp && CONFIG.whatsapp.numero || "").replace(/\D/g, "");
     return "https://wa.me/" + numero + "?text=" + encodeURIComponent(mensagem);
   }
 
   function abrirWhatsApp(mensagem, origem) {
     track("whatsapp_click", { origem: origem });
     if (CONFIG.modoPrototipo) {
-      aviso("Demonstração: WhatsApp", "Mensagem: “" + mensagem + "”");
+      aviso("Demonstração: WhatsApp " + (CONFIG.whatsapp ? CONFIG.whatsapp.exibicao : ""), "Mensagem: “" + mensagem + "”");
       return;
     }
     window.open(linkWhatsApp(mensagem), "_blank", "noopener");
@@ -129,16 +142,16 @@
 
   function contratar(plano) {
     var chave = plano.tvs + "-" + plano.periodo.id;
-    var params = { plano: chave, valor: plano.total, moeda: "BRL", tvs: plano.tvs, meses: plano.periodo.meses };
-    track("begin_checkout", params);
+    track("begin_checkout", { plano: chave, valor: plano.total, moeda: "BRL", tvs: plano.tvs, meses: plano.periodo.meses });
+    var resumo = plano.periodo.nome + " · " + tvsTexto(plano.tvs) + " · " + reais(plano.total);
     if (CONFIG.modoPrototipo) {
-      aviso("Checkout desativado no protótipo", plano.periodo.nome + " · " + plano.tvs + (plano.tvs > 1 ? " TVs" : " TV") + " · R$ " + dinheiro(plano.total));
+      aviso("Checkout desativado no protótipo", resumo);
       return;
     }
     var url = CONFIG.checkout && CONFIG.checkout[chave];
     if (url && /^https:\/\//.test(url)) { window.location.href = url; return; }
     // Sem link cadastrado: nunca deixa o visitante sem saída.
-    abrirWhatsApp("Olá! Quero assinar o plano " + plano.periodo.nome + " para " + plano.tvs + (plano.tvs > 1 ? " TVs" : " TV") + " (R$ " + dinheiro(plano.total) + ").", "plano_sem_link");
+    abrirWhatsApp("Olá! Tenho interesse no plano " + plano.periodo.nome + " para " + tvsTexto(plano.tvs) + " (" + reais(plano.total) + ").", "plano_sem_link");
   }
 
   function iniciarCliques() {
@@ -159,24 +172,27 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Cabeçalho, menu e navegação                                         */
+  /* Cabeçalho, menu, barra móvel                                        */
   /* ------------------------------------------------------------------ */
   function iniciarCabecalho() {
     var header = $(".site-header");
     var barra = $("#mobile-bar");
     var hero = $(".hero");
-    var planos = $("#planos");
+    // a barra some onde a página já oferece o mesmo botão (evita CTA duplicado)
+    var zonasSemBarra = $$("#planos, #indique, .cta-final");
     var tick = false;
 
     function atualizar() {
       tick = false;
-      var y = window.scrollY;
+      var y = window.scrollY, vh = window.innerHeight;
       header.classList.toggle("is-solid", y > 24);
       if (barra && hero) {
         var passouHero = y > hero.offsetTop + hero.offsetHeight - 120;
-        var r = planos.getBoundingClientRect();
-        var vendoPlanos = r.top < window.innerHeight * 0.6 && r.bottom > window.innerHeight * 0.4;
-        barra.classList.toggle("is-visible", passouHero && !vendoPlanos);
+        var emZona = zonasSemBarra.some(function (z) {
+          var r = z.getBoundingClientRect();
+          return r.top < vh * 0.7 && r.bottom > vh * 0.3;
+        });
+        barra.classList.toggle("is-visible", passouHero && !emZona);
       }
     }
     window.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(atualizar); } }, { passive: true });
@@ -197,17 +213,20 @@
       menu.hidden = !abrir;
       if (abrir) { var a = $("a", menu); if (a) a.focus(); }
     });
-    menu.addEventListener("click", function (e) { if (e.target.closest("a")) fechar(false); });
+    menu.addEventListener("click", function (e) { if (e.target.closest("a, button")) fechar(false); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) fechar(true); });
     window.addEventListener("resize", function () { if (window.innerWidth >= 960 && !menu.hidden) fechar(false); });
 
-    // destaca o link da seção visível
     var links = $$(".nav__list a");
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (entradas) {
         entradas.forEach(function (en) {
           if (!en.isIntersecting) return;
-          links.forEach(function (l) { l.classList.toggle("is-active", l.getAttribute("href") === "#" + en.target.id); });
+          links.forEach(function (l) {
+            var ativo = l.getAttribute("href") === "#" + en.target.id;
+            l.classList.toggle("is-active", ativo);
+            if (ativo) l.setAttribute("aria-current", "true"); else l.removeAttribute("aria-current");
+          });
         });
       }, { rootMargin: "-45% 0px -50% 0px" });
       links.forEach(function (l) { var s = $(l.getAttribute("href")); if (s) io.observe(s); });
@@ -221,24 +240,49 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Hero: parede de capas                                               */
+  /* Hero: parede de capas (computador) e faixa de capas (celular)       */
   /* ------------------------------------------------------------------ */
+  function capasAutorizadas() {
+    return (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(function (i) { return i.autorizado === true; });
+  }
+
   function iniciarHero() {
-    var alvo = $("#hero-cols");
-    if (!alvo) return;
-    var capas = (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(function (i) { return i.autorizado === true; });
+    var capas = capasAutorizadas();
     if (!capas.length) return;
-    var colunas = 4, porColuna = 6;
-    for (var c = 0; c < colunas; c++) {
-      var col = el("div", { class: "hero__col" });
-      var itens = [];
-      for (var k = 0; k < porColuna; k++) itens.push(capas[(c * 5 + k * 3) % capas.length]);
-      // duplica a sequência para o loop contínuo
-      itens.concat(itens).forEach(function (item) {
-        col.appendChild(el("img", { src: item.imagem, alt: "", width: "400", height: "600", decoding: "async", loading: c < 2 ? "eager" : "lazy" }));
-      });
-      alvo.appendChild(col);
+    var desktop = window.matchMedia("(min-width: 768px)");
+
+    function montarParede() {
+      var alvo = $("#hero-cols");
+      if (!alvo || alvo.childElementCount) return;
+      for (var c = 0; c < 3; c++) {
+        var col = el("div", { class: "hero__col" });
+        var itens = [];
+        for (var k = 0; k < 5; k++) itens.push(capas[(c * 7 + k * 3) % capas.length]);
+        itens.concat(itens).forEach(function (item, i) {
+          // as capas visíveis no topo carregam já (podem ser o LCP); o restante, sob demanda
+          col.appendChild(el("img", { src: item.imagem, alt: "", width: "400", height: "600", decoding: "async", loading: i < 3 ? "eager" : "lazy" }));
+        });
+        alvo.appendChild(col);
+      }
+      pausarForaDaTela($(".hero__wall"));
     }
+
+    function montarFaixa() {
+      var alvo = $("#hero-band");
+      if (!alvo || alvo.childElementCount) return;
+      var trilho = el("div", { class: "hero__band-track" });
+      var itens = capas.slice(0, 10);
+      itens.concat(itens).forEach(function (item, i) {
+        trilho.appendChild(el("img", { src: item.imagem, alt: "", width: "400", height: "600", decoding: "async", loading: "lazy" }));
+      });
+      alvo.appendChild(trilho);
+      pausarForaDaTela(alvo);
+    }
+
+    // só carrega as imagens da versão que está sendo exibida
+    function escolher() { if (desktop.matches) montarParede(); else montarFaixa(); }
+    escolher();
+    if (desktop.addEventListener) desktop.addEventListener("change", escolher);
   }
 
   /* ------------------------------------------------------------------ */
@@ -259,7 +303,9 @@
       self.track.scrollBy({ left: dir * self.track.clientWidth * 0.85, behavior: reduzMovimento ? "auto" : "smooth" });
       track("rail_nav", { vitrine: raiz.getAttribute("data-rail"), direcao: dir > 0 ? "proximo" : "anterior" });
     });
-    this.track.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(function () { tick = false; self.atualizar(); }); } }, { passive: true });
+    this.track.addEventListener("scroll", function () {
+      if (!tick) { tick = true; requestAnimationFrame(function () { tick = false; self.atualizar(); }); }
+    }, { passive: true });
     window.addEventListener("resize", function () { self.atualizar(); });
   }
   Carrossel.prototype.atualizar = function () {
@@ -282,12 +328,34 @@
     t.scrollLeft = 0;
     this.atualizar();
   };
+  Carrossel.prototype.animar = function () {
+    if (reduzMovimento) return;
+    var r = this.raiz;
+    r.classList.remove("is-in");
+    r.classList.add("will-animate");
+    requestAnimationFrame(function () { requestAnimationFrame(function () { r.classList.add("is-in"); }); });
+    setTimeout(function () { r.classList.remove("will-animate", "is-in"); }, 1400);
+  };
+
+  function imagemCapa(item) {
+    var img = el("img", {
+      src: item.imagem,
+      alt: (item.ilustrativo ? "Capa demonstrativa: " : "Capa: ") + item.titulo,
+      width: "400", height: "600", loading: "lazy", decoding: "async",
+    });
+    // Materiais oficiais: aceita AVIF/WebP com fallback (campo opcional `fontes`)
+    var f = item.fontes;
+    if (!f || (!f.avif && !f.webp)) return img;
+    return el("picture", null, [
+      f.avif ? el("source", { type: "image/avif", srcset: f.avif }) : null,
+      f.webp ? el("source", { type: "image/webp", srcset: f.webp }) : null,
+      img,
+    ]);
+  }
 
   function cartaoCapa(item) {
-    var frame = el("div", { class: "poster__frame" }, [
-      el("img", { src: item.imagem, alt: item.ilustrativo ? "Capa ilustrativa de " + item.titulo : "Capa de " + item.titulo, width: "400", height: "600", loading: "lazy", decoding: "async" }),
-    ]);
-    if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Ilustração" }));
+    var frame = el("div", { class: "poster__frame" }, [imagemCapa(item)]);
+    if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Demonstrativo" }));
     return el("li", null, [
       el("figure", { class: "poster" }, [
         frame,
@@ -302,7 +370,7 @@
   function cartaoCategoria(cat) {
     var card = el("div", { class: "cat" }, [
       icone("c-" + cat.icone, "cat__bg"),
-      icone("c-" + cat.icone, "cat__ico"),
+      el("span", { class: "cat__ico-wrap" }, [icone("c-" + cat.icone, "cat__ico")]),
       el("h4", { class: "cat__n", text: cat.nome }),
       el("p", { class: "cat__d", text: cat.descricao }),
     ]);
@@ -310,18 +378,29 @@
     return el("li", null, [card]);
   }
 
-  function animarEntrada(raiz) {
+  function animarAoEntrar(car) {
     if (reduzMovimento || !("IntersectionObserver" in window)) return;
-    // só anima o que ainda está abaixo da dobra: a primeira tela fica sempre completa
-    if (raiz.getBoundingClientRect().top < window.innerHeight) return;
-    raiz.classList.add("will-animate");
+    if (car.raiz.getBoundingClientRect().top < window.innerHeight) return; // primeira tela sempre completa
+    car.raiz.classList.add("will-animate");
     var io = new IntersectionObserver(function (en) {
       if (!en[0].isIntersecting) return;
-      raiz.classList.add("is-in");
       io.disconnect();
-      setTimeout(function () { raiz.classList.remove("will-animate", "is-in"); }, 1600);
+      car.raiz.classList.add("is-in");
+      setTimeout(function () { car.raiz.classList.remove("will-animate", "is-in"); }, 1600);
     }, { threshold: 0.2 });
-    io.observe(raiz);
+    io.observe(car.raiz);
+  }
+
+  function filtros(container, valores, rotuloTodos, aoEscolher) {
+    [""].concat(valores).forEach(function (v) {
+      container.appendChild(el("button", { class: "chip", type: "button", "aria-pressed": v === "" ? "true" : "false", "data-v": v, text: v || rotuloTodos }));
+    });
+    container.addEventListener("click", function (e) {
+      var b = e.target.closest(".chip");
+      if (!b || b.getAttribute("aria-pressed") === "true") return;
+      $$(".chip", container).forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
+      aoEscolher(b.getAttribute("data-v"));
+    });
   }
 
   function iniciarVitrines() {
@@ -330,42 +409,25 @@
       if (!raiz) return;
       var itens = (CATALOGO[tipo] || []).filter(function (i) { return i.autorizado === true; });
       var car = new Carrossel(raiz);
-      function render(genero) {
-        var lista = genero ? itens.filter(function (i) { return i.genero === genero; }) : itens;
-        if (!lista.length) { car.preencher([el("li", { class: "rail__empty", text: "Nenhum título nesta categoria por enquanto." })]); return; }
-        car.preencher(lista.map(cartaoCapa));
-        if (!reduzMovimento) {
-          car.raiz.classList.remove("is-in");
-          car.raiz.classList.add("will-animate");
-          requestAnimationFrame(function () { requestAnimationFrame(function () { car.raiz.classList.add("is-in"); }); });
-          setTimeout(function () { car.raiz.classList.remove("will-animate", "is-in"); }, 1400);
-        }
-      }
       car.preencher(itens.map(cartaoCapa));
-      animarEntrada(raiz);
+      animarAoEntrar(car);
 
-      // filtros por gênero, gerados a partir dos dados
       var chips = $('[data-chips="' + tipo + '"]');
-      if (chips && itens.length) {
-        var generos = itens.reduce(function (acc, i) { if (acc.indexOf(i.genero) < 0) acc.push(i.genero); return acc; }, []).sort();
-        [""].concat(generos).forEach(function (g) {
-          chips.appendChild(el("button", { class: "chip", type: "button", "aria-pressed": g === "" ? "true" : "false", "data-g": g, text: g || "Todos" }));
-        });
-        chips.addEventListener("click", function (e) {
-          var b = e.target.closest(".chip");
-          if (!b || b.getAttribute("aria-pressed") === "true") return;
-          $$(".chip", chips).forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
-          render(b.getAttribute("data-g"));
-          track("filtro_vitrine", { vitrine: tipo, genero: b.getAttribute("data-g") || "todos" });
-        });
-      }
+      if (!chips || !itens.length) return;
+      var generos = itens.reduce(function (acc, i) { if (acc.indexOf(i.genero) < 0) acc.push(i.genero); return acc; }, []).sort();
+      filtros(chips, generos, "Todos", function (g) {
+        var lista = g ? itens.filter(function (i) { return i.genero === g; }) : itens;
+        car.preencher(lista.length ? lista.map(cartaoCapa) : [el("li", { class: "rail__empty", text: "Nenhum título nesta categoria por enquanto." })]);
+        car.animar();
+        track("filtro_vitrine", { vitrine: tipo, genero: g || "todos" });
+      });
     });
 
     var raizCanais = $('.rail[data-rail="canais"]');
     if (raizCanais) {
       var car = new Carrossel(raizCanais);
       car.preencher((CATALOGO.canais || []).map(cartaoCategoria));
-      animarEntrada(raizCanais);
+      animarAoEntrar(car);
     }
   }
 
@@ -381,89 +443,104 @@
       var economia = Math.max(0, semDesconto - total);
       return {
         tvs: tvs, periodo: p, total: total,
-        porMes: total / p.meses,
+        porMes: Math.round((total / p.meses) * 100) / 100,
         economia: economia,
         economiaPct: semDesconto ? Math.round((economia / semDesconto) * 100) : 0,
       };
     });
   }
 
+  /* Melhor custo-benefício = maior % de economia (calculado, não fixo). */
+  function melhorPlano(lista) {
+    return lista.reduce(function (m, p) { return p.economiaPct > m.economiaPct ? p : m; }, lista[0]);
+  }
+
+  function preco(v) {
+    var partes = fmt2.format(v).split(",");
+    return [el("span", { class: "plan__cur", text: "R$" }), el("span", { class: "plan__val", text: partes[0] }), el("span", { class: "plan__cents", text: "," + partes[1] })];
+  }
+
   function iniciarPlanos() {
     var grade = $("#plan-grid"), seletor = $("#tv-picker"), telas = $("#tv-screens");
     if (!grade || !PLANOS) return;
+
+    var status = $("#planos-status");
+    if (status && PLANOS.status !== "validada") {
+      status.hidden = false;
+      status.appendChild(el("span", { class: "pending", text: "pendente de validação" }));
+      status.appendChild(document.createTextNode(" Valores de referência. Serão conferidos com a configuração atual do site antes da publicação."));
+    }
+
     var qtds = Object.keys(PLANOS.precos).map(Number).sort(function (a, b) { return a - b; });
-    var tvsAtual = PLANOS.padrao.tvs;
+    var tvsAtual = PLANOS.tvsPadrao || qtds[0];
     var cartoes = {};
 
     qtds.forEach(function (n) {
       var id = "tvs-" + n;
       seletor.appendChild(el("div", { class: "tv-opt" }, [
         el("input", { type: "radio", name: "tvs", id: id, value: String(n) }),
-        el("label", { for: id }, [document.createTextNode(String(n)), el("span", { class: "sr-only", text: n > 1 ? " TVs" : " TV" })]),
+        el("label", { for: id }, [String(n), el("span", { class: "sr-only", text: n > 1 ? " TVs" : " TV" })]),
       ]));
       telas.appendChild(el("span", { class: "tv-screen" }));
     });
-    var radioPadrao = $("#tvs-" + tvsAtual);
-    if (radioPadrao) radioPadrao.checked = true;
+    var radio = $("#tvs-" + tvsAtual);
+    if (radio) radio.checked = true;
 
     PLANOS.periodos.forEach(function (p) {
-      var destaque = p.id === PLANOS.padrao.destaque;
-      var refs = {
-        val: el("span", { class: "plan__val" }),
+      var r = {
+        flag: el("span", { class: "plan__flag", text: "Melhor custo-benefício" }),
+        price: el("p", { class: "plan__price" }),
+        per: el("p", { class: "plan__per" }),
         eq: el("p", { class: "plan__eq" }),
         save: el("span", { class: "plan__save" }),
         tvs: el("span"),
-        btn: el("button", { class: "btn btn--block " + (destaque ? "btn--primary" : "btn--ghost"), type: "button", text: "Assinar " + p.nome }),
+        btn: el("button", { class: "btn btn--block btn--ghost", type: "button", text: "Assinar " + p.nome }),
       };
-      var art = el("article", { class: "plan" + (destaque ? " plan--best" : ""), "aria-label": "Plano " + p.nome }, [
-        destaque ? el("span", { class: "plan__flag", text: "Maior economia" }) : null,
+      r.art = el("article", { class: "plan", "aria-label": "Plano " + p.nome }, [
+        r.flag,
         el("div", { class: "plan__head" }, [
           el("h3", { class: "plan__name", text: p.nome }),
-          el("span", { class: "plan__period", text: p.meses === 1 ? "1 mês" : p.meses + " meses" }),
+          el("span", { class: "plan__period", text: mesesTexto(p.meses) }),
         ]),
-        el("div", null, [
-          el("p", { class: "plan__price" }, [el("span", { class: "plan__cur", text: "R$" }), refs.val]),
-          refs.eq,
-        ]),
-        refs.save,
+        el("div", { class: "plan__pricebox" }, [r.price, r.per, r.eq]),
+        r.save,
         el("ul", { class: "plan__list" }, [
-          el("li", null, [icone("i-tv"), refs.tvs]),
-          el("li", null, [icone("i-cal"), el("span", { text: "Acesso por " + (p.meses === 1 ? "1 mês" : p.meses + " meses") })]),
-          el("li", null, [icone("i-chat"), el("span", { text: "Suporte pelo WhatsApp" })]),
+          el("li", null, [icone("i-tv"), r.tvs]),
+          el("li", null, [icone("i-cal"), el("span", { text: "Acesso por " + mesesTexto(p.meses) })]),
+          el("li", null, [icone("i-chat"), el("span", { text: "Atendimento pelo WhatsApp" })]),
         ]),
-        refs.btn,
+        r.btn,
       ]);
-      refs.art = art;
-      cartoes[p.id] = refs;
-      grade.appendChild(art);
+      cartoes[p.id] = r;
+      grade.appendChild(r.art);
     });
 
     function render(tvs, animar) {
       tvsAtual = tvs;
       $$(".tv-screen", telas).forEach(function (t, i) { t.classList.toggle("is-on", i < tvs); });
-      calcularPlanos(tvs).forEach(function (pl) {
-        var r = cartoes[pl.periodo.id];
-        r.val.textContent = dinheiro(pl.total);
-        r.eq.textContent = "";
-        if (pl.periodo.meses === 1) {
-          r.eq.appendChild(document.createTextNode("Pago mês a mês"));
-        } else {
-          r.eq.appendChild(document.createTextNode("Equivale a "));
-          r.eq.appendChild(el("strong", { text: "R$ " + brl2.format(pl.porMes) + "/mês" }));
-        }
+      var lista = calcularPlanos(tvs), melhor = melhorPlano(lista);
+      lista.forEach(function (pl) {
+        var r = cartoes[pl.periodo.id], destaque = pl === melhor && pl.economia > 0;
+        r.art.classList.toggle("plan--best", destaque);
+        r.flag.hidden = !destaque;
+        r.btn.className = "btn btn--block " + (destaque ? "btn--primary" : "btn--ghost");
+        r.price.textContent = "";
+        preco(pl.total).forEach(function (n) { r.price.appendChild(n); });
+        r.per.textContent = "por " + mesesTexto(pl.periodo.meses) + " · " + tvsTexto(tvs);
+        r.eq.textContent = pl.periodo.meses === 1
+          ? "Base para o cálculo da economia"
+          : "Equivale a " + reais(pl.porMes) + "/mês, em pagamento único";
         if (pl.economia > 0) {
           r.save.className = "plan__save";
-          r.save.textContent = "Economize R$ " + dinheiro(pl.economia) + " (" + pl.economiaPct + "%)";
+          r.save.textContent = "Economia de " + reais(pl.economia) + " (" + pl.economiaPct + "%)";
         } else {
           r.save.className = "plan__save plan__save--none";
-          r.save.textContent = "Sem desconto por período";
+          r.save.textContent = "Pagamento mês a mês";
         }
-        r.tvs.textContent = "Para " + tvs + (tvs > 1 ? " TVs" : " TV");
+        r.tvs.textContent = "Para " + tvsTexto(tvs);
         r.btn.onclick = function () { contratar(pl); };
-        r.btn.setAttribute("aria-label", "Assinar plano " + pl.periodo.nome + " para " + tvs + (tvs > 1 ? " TVs" : " TV") + ", R$ " + dinheiro(pl.total));
-        if (animar && !reduzMovimento) {
-          r.art.classList.remove("is-updating"); void r.art.offsetWidth; r.art.classList.add("is-updating");
-        }
+        r.btn.setAttribute("aria-label", "Assinar plano " + pl.periodo.nome + " para " + tvsTexto(tvs) + ", " + reais(pl.total) + " por " + mesesTexto(pl.periodo.meses));
+        if (animar && !reduzMovimento) { r.art.classList.remove("is-updating"); void r.art.offsetWidth; r.art.classList.add("is-updating"); }
       });
     }
 
@@ -474,12 +551,75 @@
     });
     render(tvsAtual, false);
 
-    // "view_plans" uma vez, quando a seção aparece
+    // Textos derivados da tabela (hero e FAQ): mudam sozinhos com os preços oficiais.
+    var base = calcularPlanos(qtds[0]), menor = melhorPlano(base), mensal = base[0];
+    var heroPreco = $("#hero-preco");
+    if (heroPreco && menor.economia > 0) {
+      heroPreco.appendChild(document.createTextNode("No plano " + menor.periodo.nome.toLowerCase() + " de " + tvsTexto(qtds[0]) + ", equivale a "));
+      heroPreco.appendChild(el("strong", { text: reais(menor.porMes) + "/mês" }));
+      heroPreco.appendChild(document.createTextNode("."));
+    }
+    var faq = $("#faq-economia");
+    if (faq && menor.economia > 0) {
+      faq.textContent = "O valor equivalente por mês fica menor. Com " + tvsTexto(qtds[0]) + ", o mensal custa " + reais(mensal.total) +
+        " e o " + menor.periodo.nome.toLowerCase() + " sai por " + reais(menor.total) + " (" + reais(menor.porMes) + "/mês em pagamento único), uma economia de " +
+        reais(menor.economia) + " no período.";
+    }
+
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (en) {
         if (en[0].isIntersecting) { track("view_plans", {}); io.disconnect(); }
       }, { threshold: 0.35 });
       io.observe($("#planos"));
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Indicações                                                          */
+  /* ------------------------------------------------------------------ */
+  function iniciarIndicacoes() {
+    var regras = $("#ref-regras");
+    if (!regras) return;
+    // regras abertas no computador; recolhidas no celular para não alongar a página
+    if (window.matchMedia("(min-width: 768px)").matches) regras.open = true;
+    regras.addEventListener("toggle", function () { if (regras.open) track("referral_rules_open", {}); });
+    pausarForaDaTela($(".ref__art"));
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (en) {
+        if (en[0].isIntersecting) { track("view_referral", {}); io.disconnect(); }
+      }, { threshold: 0.4 });
+      io.observe($("#indique"));
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Avaliações (somente reais e autorizadas)                            */
+  /* ------------------------------------------------------------------ */
+  function iniciarAvaliacoes() {
+    var secao = $("#avaliacoes"), lista = $("#reviews");
+    if (!secao || !lista) return;
+    var validas = AVALIACOES.filter(function (a) { return a && a.autorizado === true && a.texto && a.nome; });
+    if (validas.length) {
+      validas.forEach(function (a) {
+        var rodape = el("figcaption", { class: "review__by" }, [
+          el("strong", { text: a.nome }),
+          a.cidade ? el("span", { text: a.cidade }) : null,
+        ]);
+        if (a.fonte) {
+          var fonte = /^https:\/\//.test(a.link || "")
+            ? el("a", { href: a.link, target: "_blank", rel: "noopener noreferrer nofollow", text: "via " + a.fonte })
+            : el("span", { text: "via " + a.fonte });
+          rodape.appendChild(fonte);
+        }
+        lista.appendChild(el("figure", { class: "review" }, [el("blockquote", null, [el("p", { text: a.texto })]), rodape]));
+      });
+      secao.hidden = false;
+    } else if (CONFIG.modoPrototipo) {
+      lista.appendChild(el("div", { class: "reviews__empty" }, [
+        el("span", { class: "pending", text: "seção preparada" }),
+        el("p", { text: "Esta seção só é publicada com avaliações reais e autorizadas pelos clientes. Sem avaliações cadastradas, ela fica oculta no site." }),
+      ]));
+      secao.hidden = false;
     }
   }
 
@@ -491,12 +631,11 @@
     if (!raiz) return;
     $$(".faq__item", raiz).forEach(function (item, i) {
       var q = $(".faq__q", item), a = $(".faq__a", item);
-      var id = "faq-a-" + i;
-      a.id = id;
-      a.setAttribute("role", "region");
-      a.setAttribute("aria-labelledby", "faq-q-" + i);
+      a.id = "faq-a-" + i;
       q.id = "faq-q-" + i;
-      q.setAttribute("aria-controls", id);
+      a.setAttribute("role", "region");
+      a.setAttribute("aria-labelledby", q.id);
+      q.setAttribute("aria-controls", a.id);
       a.inert = true;
     });
     raiz.addEventListener("click", function (e) {
@@ -508,6 +647,16 @@
       $(".faq__a", item).inert = !abrir;
       if (abrir) track("faq_open", { pergunta: q.textContent.trim() });
     });
+
+    var chips = $("#faq-chips"), grupos = $$(".faq__group", raiz);
+    if (chips && grupos.length) {
+      var temas = grupos.map(function (g) { return g.getAttribute("data-tema"); });
+      filtros(chips, temas, "Todas", function (tema) {
+        grupos.forEach(function (g) { g.hidden = !!tema && g.getAttribute("data-tema") !== tema; });
+        raiz.classList.toggle("is-filtered", !!tema);
+        track("faq_filtro", { tema: tema || "todas" });
+      });
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -515,7 +664,7 @@
   /* ------------------------------------------------------------------ */
   function iniciarRevelacao() {
     if (reduzMovimento || !("IntersectionObserver" in window)) return;
-    var alvos = $$(".section-head, .plan-grid, .step, .app__visual, .app__copy, .faq__group, .cta-final__in");
+    var alvos = $$(".benefit, .section-head, .plan-grid, .ref, .step, .app__visual, .app__copy, .faq-col, .cta-final__in");
     var io = new IntersectionObserver(function (en) {
       en.forEach(function (x) {
         if (!x.isIntersecting) return;
@@ -523,9 +672,11 @@
         io.unobserve(x.target);
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
-    alvos.forEach(function (n, i) {
+    alvos.forEach(function (n) {
       if (n.getBoundingClientRect().top < window.innerHeight) return;
-      if (n.classList.contains("step")) n.style.transitionDelay = (i % 4) * 80 + "ms";
+      if (n.classList.contains("step") || n.classList.contains("benefit")) {
+        n.style.transitionDelay = (Array.prototype.indexOf.call(n.parentNode.children, n) % 4) * 80 + "ms";
+      }
       n.classList.add("reveal");
       io.observe(n);
     });
@@ -540,6 +691,8 @@
     iniciarHero();
     iniciarVitrines();
     iniciarPlanos();
+    iniciarIndicacoes();
+    iniciarAvaliacoes();
     iniciarFaq();
     iniciarRevelacao();
     iniciarConsentimento();

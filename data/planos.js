@@ -1,12 +1,18 @@
 /*
- * Tabela comercial — VALORES DE REFERÊNCIA (enviados em 06/11/2026).
- * Confirmar a tabela vigente antes de integrar o checkout.
+ * Tabela comercial do protótipo.
  *
- * Fonte única dos preços: os cartões, a economia e o valor mensal equivalente
- * são calculados a partir daqui. Nunca escreva preço direto no HTML.
+ * ATENÇÃO: estes valores são a REFERÊNCIA HISTÓRICA enviada em 06/11/2026.
+ * A fonte oficial é a configuração comercial do site em produção.
+ * Antes da integração, substituir por esses dados, sem alterar nada, e
+ * mudar `status` para "validada". Enquanto o status não for "validada",
+ * a página mostra o aviso "Preços pendentes de validação".
+ *
+ * Fonte única dos preços: cartões, economia, valor mensal equivalente,
+ * destaque de melhor custo-benefício, hero e FAQ são calculados daqui.
+ * Nunca escreva preço direto no HTML.
  */
 window.GMAX_PLANOS = Object.freeze({
-  status: "referencia", // "referencia" | "confirmada"
+  status: "pendente-validacao", // "pendente-validacao" | "validada"
   periodos: [
     { id: "mensal",     nome: "Mensal",     meses: 1 },
     { id: "trimestral", nome: "Trimestral", meses: 3 },
@@ -21,5 +27,5 @@ window.GMAX_PLANOS = Object.freeze({
     4: [120, 315, 560, 940],
     5: [150, 390, 685, 1125],
   },
-  padrao: { tvs: 1, destaque: "anual" },
+  tvsPadrao: 1,
 });

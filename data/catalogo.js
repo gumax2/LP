@@ -3,7 +3,7 @@
  *
  * REGRAS
  * - Só aparecem itens com `autorizado: true` (direito de divulgação confirmado).
- * - `ilustrativo: true` marca artes provisórias; a página exibe o selo "Ilustração".
+ * - `ilustrativo: true` marca artes provisórias; a página exibe o selo "Demonstrativo".
  * - Os títulos abaixo são FICTÍCIOS e as artes foram geradas por
  *   tools/gerar-ilustracoes.mjs a partir do campo `arte`. Substitua por
  *   materiais oficiais e autorizados antes da publicação.

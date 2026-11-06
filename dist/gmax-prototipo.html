@@ -3,20 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>GMAX | Filmes, séries e canais em até 5 TVs</title>
-  <meta name="description" content="Assine a GMAX: filmes, séries e canais organizados por categoria, com planos de 1 a 5 TVs e períodos mensal, trimestral, semestral e anual. Suporte pelo WhatsApp.">
+  <title>GMAX | Canais, Filmes e Séries</title>
+  <meta name="description" content="GMAX: canais, filmes e séries em uma só assinatura. Planos de 1 a 5 TVs, do mensal ao anual, aplicativo próprio e atendimento pelo WhatsApp.">
   <meta name="theme-color" content="#060d1c">
   <!-- PROTÓTIPO: não indexar até a publicação aprovada -->
   <meta name="robots" content="noindex, nofollow">
-  <!-- CSP (em produção, preferir enviar como cabeçalho HTTP — ver docs/IMPLANTACAO.md) -->
+  <!-- CSP (em produção, enviar como cabeçalho HTTP — ver docs/IMPLANTACAO.md) -->
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://www.gmaxcanais.com.br/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
-  <meta property="og:title" content="GMAX | Filmes, séries e canais em até 5 TVs">
-  <meta property="og:description" content="Planos de 1 a 5 TVs, do mensal ao anual. Suporte pelo WhatsApp.">
+  <meta property="og:site_name" content="GMAX">
+  <meta property="og:title" content="GMAX | Canais, Filmes e Séries">
+  <meta property="og:description" content="Planos de 1 a 5 TVs, do mensal ao anual. Atendimento pelo WhatsApp.">
   <meta property="og:url" content="https://www.gmaxcanais.com.br/">
-  <!-- PENDENTE: og:image 1200×630 com a logo oficial -->
+  <!-- PENDENTE: og:image 1200×630 com a logo oficial; favicon/apple-touch-icon oficiais -->
+  <!-- PENDENTE: favicon oficial. Ícone vazio evita requisição 404 enquanto isso. -->
+  <link rel="icon" href="data:,">
   <style>
 /* =========================================================================
    GMAX — Landing page
@@ -105,6 +108,7 @@ button { font: inherit; color: inherit; }
 
 .ico { width: 1.15em; height: 1.15em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .ico .fill, svg .fill { fill: currentColor; stroke: none; }
+.ico--wa { color: #34d77a; }
 
 .eyebrow { font: 600 0.78rem/1 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
 .lead { font-size: var(--fs-lead); color: var(--muted); max-width: 60ch; }
@@ -152,8 +156,9 @@ button { font: inherit; color: inherit; }
 .site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; transition: background-color 0.3s, border-color 0.3s, backdrop-filter 0.3s; border-bottom: 1px solid transparent; }
 .site-header.is-solid { background: rgba(6, 13, 28, 0.82); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border-bottom-color: var(--line); }
 .site-header__in { height: var(--header-h); display: flex; align-items: center; gap: 24px; }
-.brand { display: inline-flex; align-items: center; text-decoration: none; }
-.brand__word { font: 700 1.45rem/1 var(--font-display); letter-spacing: 0.06em; color: var(--white); }
+.brand { display: inline-flex; flex-direction: column; justify-content: center; gap: 3px; text-decoration: none; }
+.brand__word { display: block; font: 700 1.45rem/1 var(--font-display); letter-spacing: 0.06em; color: var(--white); }
+.brand__sub { display: block; font: 500 0.62rem/1 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
 .nav { margin-left: auto; display: none; }
 .nav__list { display: flex; gap: 4px; }
 .nav__list a { display: block; padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; transition: color 0.2s, background-color 0.2s; }
@@ -188,28 +193,53 @@ button { font: inherit; color: inherit; }
     linear-gradient(90deg, var(--bg) 0%, var(--bg) 36%, rgba(6, 13, 28, 0.7) 56%, rgba(6, 13, 28, 0.3) 100%),
     linear-gradient(0deg, var(--bg) 0%, transparent 32%, transparent 72%, rgba(6, 13, 28, 0.9) 100%);
 }
-.hero__cols { position: absolute; top: -30%; right: -8%; width: 62%; height: 160%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; transform: rotate(-9deg) ; }
-.hero__col { display: grid; gap: 14px; align-content: start; animation: wall-up 60s linear infinite; }
-.hero__col:nth-child(even) { animation-name: wall-down; animation-duration: 70s; }
+.hero__cols { position: absolute; top: -30%; right: -4%; width: 50%; height: 160%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; transform: rotate(-8deg); opacity: 0.78; }
+.hero__col { display: grid; gap: 16px; align-content: start; animation: wall-up 110s linear infinite; }
+.hero__col:nth-child(even) { animation-name: wall-down; animation-duration: 130s; }
+.is-paused .hero__col, .is-paused .hero__band-track, .is-paused .gift__body, .is-paused .gift__halo { animation-play-state: paused; }
 .hero__col img { width: 100%; height: auto; aspect-ratio: 2 / 3; border-radius: 12px; box-shadow: 0 20px 40px -20px #000; }
 @keyframes wall-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
 @keyframes wall-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
 .hero__in { position: relative; }
-.hero__title { font-size: var(--fs-h1); max-width: 15ch; margin-top: 18px; }
+.hero__title { font-size: var(--fs-h1); max-width: 14ch; margin-top: 22px; }
 .hero__lead { font-size: var(--fs-lead); color: var(--muted); max-width: 46ch; margin-top: 20px; }
 .hero__lead strong { color: var(--text); font-weight: 600; }
+.hero__lead { min-height: 3.2em; } /* reserva o espaço do preço calculado via JS (evita CLS) */
+@media (max-width: 479px) { .hero__lead { min-height: 4.8em; } }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 .hero__trust { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 36px; color: var(--muted); font-size: 0.92rem; }
 .hero__trust li { display: inline-flex; align-items: center; gap: 8px; }
 .hero__trust .ico { color: var(--accent); }
+.hero__band { display: none; }
 @media (max-width: 767px) {
-  .hero__cols { width: 150%; right: -60%; top: -10%; opacity: 0.3; }
-  .hero__wall::after { background: linear-gradient(0deg, var(--bg) 6%, rgba(6, 13, 28, 0.86) 40%, rgba(6, 13, 28, 0.62) 100%); }
+  .hero { padding-bottom: 36px; }
+  .hero__wall { display: none; }
   .hero__actions .btn { flex: 1 1 100%; }
+  .hero__band {
+    display: block; margin-top: 36px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .hero__band-track { display: flex; gap: 10px; width: max-content; animation: band 70s linear infinite; }
+  .hero__band-track img { width: 92px; height: auto; aspect-ratio: 2 / 3; border-radius: 10px; box-shadow: 0 0 0 1px var(--line); }
 }
+@keyframes band { to { transform: translateX(-50%); } }
+.hero__promo {
+  display: inline-flex; align-items: center; gap: 10px; max-width: 100%;
+  padding: 7px 14px 7px 10px; border-radius: 999px; text-decoration: none; font-size: 0.86rem; color: var(--muted);
+  background: rgba(34, 211, 238, 0.08); border: 1px solid rgba(34, 211, 238, 0.32);
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.hero__promo strong { color: var(--text); font-weight: 600; }
+@media (max-width: 419px) { .hero__promo-lead { display: none; } }
+.hero__promo .ico { color: var(--accent); }
+.hero__promo:hover { border-color: var(--accent); background: rgba(34, 211, 238, 0.14); }
+.hero__promo-arrow { transition: transform 0.3s var(--ease); }
+.hero__promo:hover .hero__promo-arrow { transform: translateX(3px); }
 
 /* entrada do hero */
-.hero .eyebrow, .hero__title, .hero__lead, .hero__actions, .hero__trust { animation: rise 0.9s var(--ease) both; }
+.hero__promo, .hero__title, .hero__lead, .hero__actions, .hero__trust, .hero__band { animation: rise 0.9s var(--ease) both; }
+.hero__band { animation-delay: 0.38s; }
 .hero__title { animation-delay: 0.06s; }
 .hero__lead { animation-delay: 0.14s; }
 .hero__actions { animation-delay: 0.22s; }
@@ -265,7 +295,8 @@ button { font: inherit; color: inherit; }
 .rail__empty { color: var(--muted); padding: 30px 0; }
 
 /* entrada escalonada dos itens */
-.rail.will-animate .rail__track > li { opacity: 0; transform: translateX(28px) scale(0.98); }
+/* animação só no eixo vertical: deslocar no eixo X desalinha o scroll-snap */
+.rail.will-animate .rail__track > li { opacity: 0; transform: translateY(18px) scale(0.98); }
 .rail.is-in .rail__track > li { opacity: 1; transform: none; transition: opacity 0.7s var(--ease), transform 0.8s var(--ease); transition-delay: calc(var(--i, 0) * 60ms); }
 
 /* ---------- Capa ---------- */
@@ -308,7 +339,8 @@ button { font: inherit; color: inherit; }
   border: 1px solid var(--line);
   transition: transform 0.5s var(--ease), border-color 0.3s, box-shadow 0.5s var(--ease);
 }
-.cat__ico { position: absolute; top: 18px; right: 18px; width: 44px; height: 44px; fill: none; stroke: var(--tom); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.6s var(--ease); }
+.cat__ico-wrap { position: absolute; top: 18px; right: 18px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 16px; background: color-mix(in srgb, var(--tom) 14%, transparent); border: 1px solid color-mix(in srgb, var(--tom) 35%, transparent); }
+.cat__ico { width: 30px; height: 30px; fill: none; stroke: var(--tom); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.6s var(--ease); }
 .cat__bg { position: absolute; right: -28px; bottom: -34px; width: 150px; height: 150px; fill: none; stroke: var(--tom); stroke-width: 1; opacity: 0.12; transition: transform 0.8s var(--ease), opacity 0.4s; }
 .cat__n { font: 700 1.3rem/1.2 var(--font-display); position: relative; }
 .cat__d { color: var(--muted); font-size: 0.9rem; position: relative; max-width: 26ch; }
@@ -346,6 +378,13 @@ button { font: inherit; color: inherit; }
 .tv-screen.is-on::after { background: var(--accent); }
 
 .plan-grid { display: grid; gap: 16px; grid-template-columns: 1fr; align-items: stretch; }
+@media (max-width: 639px) {
+  /* celular: cartões compactos e o melhor custo-benefício primeiro */
+  .plan-grid { gap: 14px; }
+  .plan { padding: 22px 18px 18px; gap: 14px; }
+  .plan--best { order: -1; margin-top: 8px; }
+  .plan-grid .plan__list { display: none; }
+}
 @media (min-width: 640px) { .plan-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1060px) { .plan-grid { grid-template-columns: repeat(4, 1fr); } }
 .plan {
@@ -363,15 +402,19 @@ button { font: inherit; color: inherit; }
 .plan__period { color: var(--subtle); font-size: 0.86rem; }
 .plan__price { display: flex; align-items: flex-start; gap: 4px; font-family: var(--font-display); font-variant-numeric: tabular-nums; }
 .plan__cur { font-size: 1rem; font-weight: 600; margin-top: 8px; color: var(--muted); }
+.plan__cents { font-size: 1.1rem; font-weight: 600; margin-top: 6px; color: var(--muted); }
+.plan__pricebox { display: grid; gap: 6px; }
+.plan__per { color: var(--text); font-size: 0.92rem; font-weight: 500; }
 .plan__val { font-size: clamp(2.4rem, 2rem + 1.4vw, 2.9rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
-.plan__eq { color: var(--muted); font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+.plan__eq { color: var(--subtle); font-size: 0.84rem; font-variant-numeric: tabular-nums; }
 .plan__eq strong { color: var(--text); font-weight: 600; }
 .plan__save { align-self: flex-start; font: 600 0.82rem/1 var(--font-body); color: #5eead4; background: rgba(94, 234, 212, 0.1); border: 1px solid rgba(94, 234, 212, 0.25); padding: 7px 10px; border-radius: 999px; font-variant-numeric: tabular-nums; }
 .plan__save--none { color: var(--subtle); background: transparent; border-color: var(--line); }
 .plan__list { display: grid; gap: 8px; color: var(--muted); font-size: 0.92rem; border-top: 1px solid var(--line); padding-top: 16px; margin-top: auto; }
 .plan__list li { display: flex; gap: 8px; align-items: center; }
 .plan__list .ico { color: var(--accent); }
-.plan.is-updating .plan__val, .plan.is-updating .plan__eq, .plan.is-updating .plan__save { animation: tick 0.45s var(--ease); }
+.plan.is-updating .plan__price, .plan.is-updating .plan__eq, .plan.is-updating .plan__per, .plan.is-updating .plan__save { animation: tick 0.45s var(--ease); }
+.plans-status { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; max-width: 62ch; color: var(--muted); font-size: 0.86rem; }
 @keyframes tick { 0% { opacity: 0.2; transform: translateY(6px); } 100% { opacity: 1; transform: none; } }
 .plans-note { margin: 28px auto 0; max-width: 70ch; text-align: center; color: var(--muted); font-size: 0.9rem; }
 .plan-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-variant-numeric: tabular-nums; }
@@ -488,13 +531,14 @@ button { font: inherit; color: inherit; }
   transform: translateY(110%); transition: transform 0.4s var(--ease);
 }
 .mobile-bar.is-visible { transform: none; }
+.has-consent .mobile-bar { transform: translateY(110%); }
 .mobile-bar .btn--primary { flex: 1; }
 .mobile-bar__wa .ico { color: #34d77a; }
 @media (min-width: 960px) { .mobile-bar { display: none; } }
 
 /* ---------- Consentimento e avisos ---------- */
 .consent {
-  position: fixed; z-index: 60; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  position: fixed; z-index: 60; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   max-width: 520px; margin-inline: auto; padding: 12px 14px; border-radius: var(--radius);
   background: var(--surface-2); border: 1px solid var(--line-strong); box-shadow: 0 24px 60px -20px #000;
   display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; font-size: 0.8rem; line-height: 1.45; color: var(--muted); animation: rise 0.5s var(--ease) both;
@@ -508,11 +552,105 @@ button { font: inherit; color: inherit; }
   position: fixed; z-index: 70; left: 50%; top: calc(var(--header-h) + 14px + env(safe-area-inset-top, 0px)); transform: translateX(-50%);
   width: min(460px, calc(100% - 32px)); padding: 14px 16px; border-radius: var(--radius);
   background: #10284d; border: 1px solid rgba(34, 211, 238, 0.45); box-shadow: 0 24px 60px -18px #000;
-  font-size: 0.9rem; animation: toast-in 0.4s var(--ease);
+  font-size: 0.9rem;
 }
+.toast.is-in { animation: toast-in 0.4s var(--ease); }
 .toast strong { display: block; margin-bottom: 2px; color: var(--accent); }
-.toast code { font-size: 0.82rem; color: var(--muted); word-break: break-word; }
+.toast__d { display: block; font-size: 0.86rem; color: var(--muted); overflow-wrap: anywhere; }
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, -10px); } }
+
+/* ---------- Benefícios ---------- */
+.section--tight { padding-block: 8px clamp(40px, 6vw, 72px); }
+.benefits { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 960px) { .benefits { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+.benefit { display: grid; gap: 8px; align-content: start; padding: 18px 16px; border-radius: var(--radius); background: linear-gradient(180deg, rgba(18, 36, 74, 0.55), rgba(13, 26, 51, 0.25)); border: 1px solid var(--line); min-width: 0; }
+.benefit__ico { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px; color: var(--accent); background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.25); margin-bottom: 4px; }
+.benefit__ico svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.benefit h3 { font-size: 1rem; letter-spacing: -0.01em; }
+.benefit p { color: var(--muted); font-size: 0.86rem; line-height: 1.5; }
+@media (min-width: 960px) { .benefit { padding: 22px 20px; } .benefit h3 { font-size: 1.08rem; } .benefit p { font-size: 0.92rem; } }
+
+/* ---------- Programa de indicações ---------- */
+.section--ref { padding-top: clamp(56px, 8vw, 100px); }
+.ref {
+  position: relative; isolation: isolate; overflow: hidden;
+  padding: clamp(26px, 5vw, 56px); border-radius: clamp(22px, 3vw, 32px);
+  background:
+    radial-gradient(70% 90% at 100% 0%, rgba(34, 211, 238, 0.28), transparent 60%),
+    radial-gradient(60% 80% at 0% 100%, rgba(14, 165, 233, 0.2), transparent 60%),
+    linear-gradient(150deg, #0f2a57 0%, #0a1b3b 55%, #081530 100%);
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  box-shadow: 0 40px 90px -40px rgba(34, 211, 238, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.ref::before { /* malha sutil */
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.35;
+  background-image: radial-gradient(rgba(150, 200, 255, 0.18) 1px, transparent 1px); background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(120deg, transparent 30%, #000 100%); mask-image: linear-gradient(120deg, transparent 30%, #000 100%);
+}
+.ref__top { display: grid; gap: 8px; align-items: center; }
+@media (min-width: 860px) { .ref__top { grid-template-columns: 1.35fr 0.65fr; gap: 32px; } }
+.ref__copy { display: grid; gap: 16px; justify-items: start; min-width: 0; }
+.ref__eyebrow { font: 600 0.76rem/1 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+.ref__title { display: grid; gap: 6px; text-transform: uppercase; letter-spacing: -0.01em; }
+.ref__q { font-size: clamp(1.15rem, 0.95rem + 1vw, 1.6rem); color: var(--text); }
+.ref__win { font-size: clamp(1.6rem, 1.1rem + 2.4vw, 2.6rem); line-height: 1.05; }
+.ref__big {
+  display: inline-block; font-size: 1.32em; line-height: 1;
+  background: linear-gradient(95deg, #ffffff 0%, #8ef0fc 45%, var(--accent) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 22px rgba(34, 211, 238, 0.35));
+}
+.ref__lead { color: #c3d3ea; max-width: 56ch; font-size: 1rem; }
+.ref__lead strong { display: block; color: var(--text); font-weight: 600; margin-bottom: 4px; }
+.ref__btn { text-transform: uppercase; letter-spacing: 0.04em; margin-top: 4px; }
+@media (max-width: 559px) { .ref__btn { width: 100%; font-size: 0.92rem; letter-spacing: 0.02em; padding: 0 16px; } }
+.ref__art { display: grid; place-items: center; order: -1; }
+@media (min-width: 860px) { .ref__art { order: 0; } }
+.gift { width: clamp(120px, 34vw, 240px); height: auto; overflow: visible; }
+.gift__body { transform-origin: 110px 140px; animation: gift-float 6s ease-in-out infinite; }
+.gift__halo { transform-origin: center; animation: gift-glow 6s ease-in-out infinite; }
+.gift__spark path { transform-box: fill-box; transform-origin: center; animation: spark 3.2s ease-in-out infinite; }
+.gift__spark path:nth-child(2) { animation-delay: 1.1s; }
+.gift__spark path:nth-child(3) { animation-delay: 2.1s; }
+@keyframes gift-float { 50% { transform: translateY(-6px) rotate(-1.5deg); } }
+@keyframes gift-glow { 50% { opacity: 0.6; transform: scale(0.94); } }
+@keyframes spark { 0%, 100% { opacity: 0.25; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1); } }
+.ref__steps { display: grid; gap: 10px; margin-top: clamp(24px, 4vw, 36px); counter-reset: r; }
+@media (min-width: 720px) { .ref__steps { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
+.ref__steps li { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: var(--radius); background: rgba(4, 12, 28, 0.45); border: 1px solid rgba(150, 200, 255, 0.16); }
+.ref__steps p { font-size: 0.92rem; color: var(--muted); }
+.ref__steps strong { color: var(--text); font-weight: 600; }
+.ref__n { flex: none; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; font: 700 0.95rem/1 var(--font-display); color: var(--accent-ink); background: var(--accent); box-shadow: 0 0 18px -4px var(--glow); }
+.ref__rules { margin-top: 18px; border-top: 1px solid rgba(150, 200, 255, 0.16); padding-top: 14px; }
+.ref__rules summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.92rem; color: var(--text); padding: 6px 0; }
+.ref__rules summary::-webkit-details-marker { display: none; }
+.ref__rules summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(45deg) translateY(-2px); transition: transform 0.3s var(--ease); }
+.ref__rules[open] summary::after { transform: rotate(225deg) translateY(-2px); }
+.ref__rules ul { display: grid; gap: 6px 28px; margin-top: 10px; color: var(--muted); font-size: 0.88rem; }
+@media (min-width: 720px) { .ref__rules ul { display: block; columns: 2; column-gap: 36px; } .ref__rules li { break-inside: avoid; margin-bottom: 6px; } }
+.ref__rules li { position: relative; padding-left: 18px; }
+.ref__rules li::before { content: ""; position: absolute; left: 0; top: 0.45em; width: 9px; height: 5px; border-left: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(-45deg); }
+
+/* ---------- Complementos de seções ---------- */
+.steps-help { margin-top: 24px; display: flex; justify-content: center; }
+.app__how { display: grid; gap: 10px; counter-reset: a; }
+.app__how li { display: flex; gap: 12px; align-items: center; color: var(--muted); font-size: 0.95rem; }
+.app__how li > span:first-child { flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; font: 700 0.85rem/1 var(--font-display); color: var(--accent); background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.3); }
+.app__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.reviews { display: grid; gap: 16px; }
+@media (min-width: 720px) { .reviews { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } }
+.review { margin: 0; padding: 22px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 14px; }
+.review blockquote { margin: 0; color: var(--text); }
+.review__by { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--subtle); font-size: 0.86rem; }
+.review__by strong { color: var(--text); }
+.review__by a { color: var(--accent); }
+.reviews__empty { display: grid; gap: 10px; justify-items: start; padding: 22px; border-radius: var(--radius-lg); border: 1px dashed var(--line-strong); color: var(--muted); max-width: 70ch; }
+.faq-col { display: grid; gap: 20px; min-width: 0; }
+.chips--faq { margin-top: 0; }
+.faq.is-filtered .faq__gt { display: none; }
+.cta-final__brand { display: grid; justify-items: center; gap: 4px; margin-bottom: 8px; }
+.cta-final__brand .brand__word { font-size: 1.8rem; }
+.cta-final__support { margin-top: 10px; font-size: 0.92rem !important; color: var(--subtle) !important; }
+.footer__brand .brand__word { margin-bottom: 4px; }
 
 /* ---------- Revelação ao rolar (só abaixo da dobra, adicionada via JS) ---------- */
 .reveal { opacity: 0; transform: translateY(24px); }
@@ -532,7 +670,7 @@ button { font: inherit; color: inherit; }
 
   <div class="proto-bar" id="proto-bar" role="note">
     <div class="wrap proto-bar__in">
-      <p><strong>Protótipo GMAX.</strong> Checkouts desativados, imagens ilustrativas e valores de referência.</p>
+      <p><strong>Protótipo GMAX.</strong> Checkouts desativados, imagens ilustrativas e preços pendentes de validação.</p>
       <button class="proto-bar__close" type="button" id="proto-close" aria-label="Fechar aviso do protótipo">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
@@ -541,15 +679,17 @@ button { font: inherit; color: inherit; }
 
   <header class="site-header" id="topo">
     <div class="wrap site-header__in">
-      <!-- PENDENTE: substituir pelo SVG da logo oficial GMAX (assets/img/logo-gmax.svg) -->
-      <a class="brand" href="#topo" aria-label="GMAX — início">
+      <!-- PENDENTE: substituir pelo arquivo da logo oficial GMAX (assets/img/logo-gmax.svg).
+           Até lá, apenas o nome em texto, sem desenho de marca. -->
+      <a class="brand" href="#topo" aria-label="GMAX: Canais, Filmes e Séries. Ir para o início">
         <span class="brand__word">GMAX</span>
+        <span class="brand__sub">Canais, Filmes e Séries</span>
       </a>
       <nav class="nav" aria-label="Principal">
         <ul class="nav__list">
           <li><a href="#conteudo">Conteúdo</a></li>
           <li><a href="#planos">Planos</a></li>
-          <li><a href="#como-funciona">Como funciona</a></li>
+          <li><a href="#indique">Indique e ganhe</a></li>
           <li><a href="#app">GMAX Player</a></li>
           <li><a href="#duvidas">Dúvidas</a></li>
         </ul>
@@ -564,56 +704,92 @@ button { font: inherit; color: inherit; }
     <div class="menu-mobile" id="menu-mobile" hidden>
       <nav aria-label="Menu móvel">
         <ul>
-          <li><a href="#conteudo">Conteúdo</a></li>
+          <li><a href="#conteudo">Filmes, séries e canais</a></li>
           <li><a href="#planos">Planos e preços</a></li>
+          <li><a href="#indique">Indique e ganhe 1 mês</a></li>
           <li><a href="#como-funciona">Como funciona</a></li>
           <li><a href="#app">GMAX Player</a></li>
           <li><a href="#duvidas">Dúvidas frequentes</a></li>
         </ul>
-        <a class="btn btn--primary btn--block" href="#planos" data-track="cta_click" data-local="menu">Ver planos</a>
-        <button class="btn btn--ghost btn--block" type="button" data-wa="Olá! Vim pelo site e quero tirar uma dúvida." data-origem="menu">Falar no WhatsApp</button>
+        <a class="btn btn--primary btn--block" href="#planos" data-track="cta_click" data-local="menu">Conhecer os planos</a>
+        <button class="btn btn--ghost btn--block" type="button" data-wa="Olá! Tenho interesse em conhecer os planos da GMAX." data-origem="menu">Falar no WhatsApp</button>
       </nav>
     </div>
   </header>
 
   <main id="conteudo-principal">
-    <!-- HERO -->
+
+    <!-- 1. APRESENTAÇÃO -->
     <section class="hero" aria-labelledby="hero-titulo">
       <div class="hero__wall" aria-hidden="true">
         <div class="hero__cols" id="hero-cols"></div>
       </div>
       <div class="wrap hero__in">
-        <p class="eyebrow">Filmes · Séries · Canais</p>
-        <h1 id="hero-titulo" class="hero__title">Tudo o que você quer assistir, <span class="grad">numa só assinatura.</span></h1>
-        <p class="hero__lead">Planos de 1 a 5 TVs, do mensal ao anual. No plano anual de 1 TV, sai por <strong>R$&nbsp;25 por mês</strong>.</p>
+        <a class="hero__promo" href="#indique" data-track="cta_click" data-local="hero_indicacao">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gift"/></svg>
+          <span><span class="hero__promo-lead">Cliente GMAX? </span><strong>Indique e ganhe 1 mês grátis</strong></span>
+          <svg class="ico hero__promo-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <h1 id="hero-titulo" class="hero__title">Canais, filmes e séries <span class="grad">em uma só assinatura.</span></h1>
+        <p class="hero__lead">Escolha de 1 a 5 TVs e o período que preferir. <span id="hero-preco"></span></p>
         <div class="hero__actions">
-          <a class="btn btn--primary btn--lg" href="#planos" data-track="cta_click" data-local="hero">Ver planos e preços</a>
-          <button class="btn btn--ghost btn--lg" type="button" data-wa="Olá! Vim pelo site e gostaria de solicitar um teste." data-origem="hero_teste" data-track-extra="trial_request">
-            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
-            Pedir teste pelo WhatsApp
+          <a class="btn btn--primary btn--lg" href="#planos" data-track="cta_click" data-local="hero">Conhecer os planos</a>
+          <button class="btn btn--ghost btn--lg" type="button" data-wa="Olá! Tenho interesse em conhecer os planos da GMAX." data-origem="hero">
+            <svg class="ico ico--wa" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+            Falar no WhatsApp
           </button>
         </div>
         <ul class="hero__trust">
-          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tv"/></svg>Até 5 TVs por assinatura</li>
-          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cal"/></svg>Planos de 1 a 12 meses</li>
-          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg>Suporte pelo WhatsApp</li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tv"/></svg>De 1 a 5 TVs</li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cal"/></svg>Do mensal ao anual</li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg>Atendimento pelo WhatsApp</li>
+        </ul>
+      </div>
+      <div class="hero__band" id="hero-band" aria-hidden="true"></div>
+    </section>
+
+    <!-- 2. BENEFÍCIOS -->
+    <section class="section section--tight" id="beneficios" aria-labelledby="beneficios-titulo">
+      <div class="wrap">
+        <h2 id="beneficios-titulo" class="sr-only">Por que escolher a GMAX</h2>
+        <ul class="benefits">
+          <li class="benefit">
+            <span class="benefit__ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-layers"/></svg></span>
+            <h3>Planos flexíveis</h3>
+            <p>De 1 a 5 TVs, com períodos mensal, trimestral, semestral ou anual.</p>
+          </li>
+          <li class="benefit">
+            <span class="benefit__ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-app"/></svg></span>
+            <h3>Aplicativo próprio</h3>
+            <p>O GMAX Player está disponível na Google Play para Android.</p>
+          </li>
+          <li class="benefit">
+            <span class="benefit__ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chat"/></svg></span>
+            <h3>Suporte pelo WhatsApp</h3>
+            <p>Dúvidas sobre planos e instalação resolvidas direto com a nossa equipe.</p>
+          </li>
+          <li class="benefit">
+            <span class="benefit__ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gift"/></svg></span>
+            <h3>Indique e ganhe</h3>
+            <p>Clientes ganham 1 mês grátis por indicação que fechar plano.</p>
+          </li>
         </ul>
       </div>
     </section>
 
-    <!-- CONTEÚDO -->
+    <!-- 4–6. CONTEÚDO -->
     <section class="section" id="conteudo" aria-labelledby="conteudo-titulo">
       <div class="wrap section-head">
         <p class="eyebrow">Conteúdo</p>
         <h2 id="conteudo-titulo">Escolha o que assistir hoje</h2>
-        <p class="lead">Filmes, séries e canais organizados para você achar rápido o que quer ver.</p>
+        <p class="lead">Filmes, séries e canais organizados por categoria.</p>
       </div>
 
-      <div class="rail" data-rail="filmes" aria-labelledby="rail-filmes-t">
+      <div class="rail" data-rail="filmes" role="region" aria-labelledby="rail-filmes-t">
         <div class="wrap rail__head">
-          <div>
+          <div class="rail__intro">
             <h3 id="rail-filmes-t" class="rail__title">Filmes em destaque</h3>
-            <div class="chips" role="toolbar" aria-label="Filtrar filmes por gênero" data-chips="filmes"></div>
+            <div class="chips" role="toolbar" aria-label="Filtrar filmes por categoria" data-chips="filmes"></div>
           </div>
           <div class="rail__ctrls">
             <button class="rail__btn" type="button" data-dir="-1" aria-label="Filmes anteriores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -621,16 +797,16 @@ button { font: inherit; color: inherit; }
           </div>
         </div>
         <div class="rail__viewport">
-          <ul class="rail__track" tabindex="0" aria-label="Filmes em destaque, role para o lado para ver mais"></ul>
+          <ul class="rail__track" tabindex="0" aria-label="Filmes em destaque. Role para o lado para ver mais"></ul>
         </div>
         <div class="wrap"><div class="rail__progress" aria-hidden="true"><span></span></div></div>
       </div>
 
-      <div class="rail" data-rail="series" aria-labelledby="rail-series-t">
+      <div class="rail" data-rail="series" role="region" aria-labelledby="rail-series-t">
         <div class="wrap rail__head">
-          <div>
+          <div class="rail__intro">
             <h3 id="rail-series-t" class="rail__title">Séries populares</h3>
-            <div class="chips" role="toolbar" aria-label="Filtrar séries por gênero" data-chips="series"></div>
+            <div class="chips" role="toolbar" aria-label="Filtrar séries por categoria" data-chips="series"></div>
           </div>
           <div class="rail__ctrls">
             <button class="rail__btn" type="button" data-dir="-1" aria-label="Séries anteriores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -638,16 +814,16 @@ button { font: inherit; color: inherit; }
           </div>
         </div>
         <div class="rail__viewport">
-          <ul class="rail__track" tabindex="0" aria-label="Séries populares, role para o lado para ver mais"></ul>
+          <ul class="rail__track" tabindex="0" aria-label="Séries populares. Role para o lado para ver mais"></ul>
         </div>
         <div class="wrap"><div class="rail__progress" aria-hidden="true"><span></span></div></div>
       </div>
 
-      <div class="rail rail--cats" data-rail="canais" aria-labelledby="rail-canais-t">
+      <div class="rail rail--cats" data-rail="canais" role="region" aria-labelledby="rail-canais-t">
         <div class="wrap rail__head">
-          <div>
+          <div class="rail__intro">
             <h3 id="rail-canais-t" class="rail__title">Canais por categoria</h3>
-            <p class="rail__sub">A grade de canais de cada categoria será exibida conforme a lista oficial.</p>
+            <p class="rail__sub">A lista de canais de cada categoria será exibida conforme a grade oficial.</p>
           </div>
           <div class="rail__ctrls">
             <button class="rail__btn" type="button" data-dir="-1" aria-label="Categorias anteriores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -655,21 +831,22 @@ button { font: inherit; color: inherit; }
           </div>
         </div>
         <div class="rail__viewport">
-          <ul class="rail__track" tabindex="0" aria-label="Categorias de canais, role para o lado para ver mais"></ul>
+          <ul class="rail__track" tabindex="0" aria-label="Categorias de canais. Role para o lado para ver mais"></ul>
         </div>
         <div class="wrap"><div class="rail__progress" aria-hidden="true"><span></span></div></div>
       </div>
 
-      <p class="wrap disclaimer">Capas e títulos ilustrativos, criados para este protótipo. A vitrine oficial usará somente materiais com divulgação autorizada.</p>
+      <p class="wrap disclaimer">Capas e títulos demonstrativos, criados pela GMAX para este protótipo. A vitrine oficial usará somente materiais com divulgação autorizada.</p>
     </section>
 
-    <!-- PLANOS -->
+    <!-- 3. PLANOS -->
     <section class="section section--plans" id="planos" aria-labelledby="planos-titulo">
       <div class="wrap">
         <div class="section-head section-head--center">
-          <p class="eyebrow">Planos</p>
+          <p class="eyebrow">Planos e preços</p>
           <h2 id="planos-titulo">Quanto mais tempo, menos você paga por mês</h2>
           <p class="lead">Escolha quantas TVs vão usar a assinatura e compare os períodos.</p>
+          <p id="planos-status" class="plans-status" hidden></p>
         </div>
 
         <fieldset class="tv-picker">
@@ -681,28 +858,84 @@ button { font: inherit; color: inherit; }
         <div class="plan-grid" id="plan-grid" aria-live="polite"></div>
 
         <noscript>
-          <table class="plan-table">
-            <caption>Tabela de preços (valores totais por período)</caption>
-            <thead><tr><th scope="col">TVs</th><th scope="col">Mensal</th><th scope="col">Trimestral</th><th scope="col">Semestral</th><th scope="col">Anual</th></tr></thead>
-            <tbody>
-              <tr><th scope="row">1</th><td>R$ 35</td><td>R$ 95</td><td>R$ 175</td><td>R$ 300</td></tr>
-              <tr><th scope="row">2</th><td>R$ 70</td><td>R$ 185</td><td>R$ 340</td><td>R$ 580</td></tr>
-              <tr><th scope="row">3</th><td>R$ 90</td><td>R$ 240</td><td>R$ 435</td><td>R$ 735</td></tr>
-              <tr><th scope="row">4</th><td>R$ 120</td><td>R$ 315</td><td>R$ 560</td><td>R$ 940</td></tr>
-              <tr><th scope="row">5</th><td>R$ 150</td><td>R$ 390</td><td>R$ 685</td><td>R$ 1.125</td></tr>
-            </tbody>
-          </table>
+          <p class="plans-note">Ative o JavaScript para ver os planos ou fale com a gente pelo WhatsApp (31) 99002-9545.</p>
         </noscript>
 
         <p class="plans-note">
           <span class="pending">a confirmar</span>
-          Valores de referência. Formas de pagamento e condições serão exibidas após a confirmação da tabela vigente.
-          Prefere conversar antes? <button class="link" type="button" data-wa="Olá! Quero ajuda para escolher um plano." data-origem="planos_ajuda">Fale com a gente no WhatsApp</button>.
+          Formas de pagamento e condições comerciais serão exibidas conforme a configuração atual do site.
+          Ficou em dúvida? <button class="link" type="button" data-wa="Olá! Tenho interesse em conhecer os planos da GMAX. Pode me ajudar a escolher?" data-origem="planos_ajuda">Tire suas dúvidas no WhatsApp</button>.
         </p>
       </div>
     </section>
 
-    <!-- COMO FUNCIONA -->
+    <!-- 8. PROGRAMA DE INDICAÇÕES -->
+    <section class="section section--ref" id="indique" aria-labelledby="indique-titulo">
+      <div class="wrap">
+        <div class="ref">
+          <div class="ref__top">
+            <div class="ref__copy">
+              <p class="ref__eyebrow">Programa de indicações GMAX</p>
+              <h2 id="indique-titulo" class="ref__title">
+                <span class="ref__q">Indicou alguém e fechou?</span>
+                <span class="ref__win">Ganhe <span class="ref__big">1 mês grátis!</span></span>
+              </h2>
+              <p class="ref__lead"><strong>Você já é cliente GMAX? Então aproveite nossa promoção!</strong>
+                Indique a GMAX para um amigo ou familiar. Se a pessoa indicada contratar um plano e o pagamento for confirmado, você ganha o mês seguinte de brinde!</p>
+              <button class="btn btn--primary btn--lg ref__btn" type="button"
+                data-wa="Olá! Sou cliente GMAX e quero participar da promoção de indicação. Como faço para indicar um amigo?"
+                data-origem="indicacao" data-track-extra="referral_click">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gift"/></svg>
+                Quero indicar um amigo
+              </button>
+            </div>
+            <div class="ref__art" aria-hidden="true">
+              <svg class="gift" viewBox="0 0 220 220">
+                <defs>
+                  <linearGradient id="g-box" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b4a8a"/><stop offset="1" stop-color="#0c2550"/></linearGradient>
+                  <linearGradient id="g-lid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2463b0"/><stop offset="1" stop-color="#15407c"/></linearGradient>
+                  <linearGradient id="g-rib" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ae8f7"/><stop offset="1" stop-color="#18b6d6"/></linearGradient>
+                  <radialGradient id="g-halo"><stop offset="0" stop-color="#22d3ee" stop-opacity=".45"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+                </defs>
+                <circle cx="110" cy="118" r="104" fill="url(#g-halo)" class="gift__halo"/>
+                <g class="gift__body">
+                  <rect x="48" y="104" width="124" height="88" rx="10" fill="url(#g-box)" stroke="#3fa9e0" stroke-opacity=".5"/>
+                  <rect x="40" y="82" width="140" height="30" rx="8" fill="url(#g-lid)" stroke="#5cc4f0" stroke-opacity=".6"/>
+                  <rect x="100" y="82" width="20" height="110" fill="url(#g-rib)"/>
+                  <path d="M110 82c-10-20-40-34-50-20-8 11 10 22 50 20Z" fill="none" stroke="url(#g-rib)" stroke-width="8" stroke-linejoin="round"/>
+                  <path d="M110 82c10-20 40-34 50-20 8 11-10 22-50 20Z" fill="none" stroke="url(#g-rib)" stroke-width="8" stroke-linejoin="round"/>
+                  <circle cx="110" cy="82" r="7" fill="#c8f6fd"/>
+                </g>
+                <g class="gift__spark" fill="#9beefb">
+                  <path d="M30 60l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/>
+                  <path d="M188 46l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>
+                  <path d="M196 150l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <ol class="ref__steps">
+            <li><span class="ref__n">1</span><p><strong>Indique um amigo.</strong></p></li>
+            <li><span class="ref__n">2</span><p><strong>Seu amigo contrata um plano.</strong></p></li>
+            <li><span class="ref__n">3</span><p><strong>Após a confirmação do pagamento,</strong> você ganha o próximo mês gratuitamente.</p></li>
+          </ol>
+
+          <details class="ref__rules" id="ref-regras">
+            <summary>Regras da promoção</summary>
+            <ul>
+              <li>Promoção exclusiva para clientes ativos da GMAX.</li>
+              <li>A indicação deverá resultar em uma contratação efetiva.</li>
+              <li>O pagamento do indicado deverá ser confirmado.</li>
+              <li>O benefício corresponde ao mês seguinte do cliente que realizou a indicação.</li>
+              <li>A concessão será validada pela equipe GMAX.</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. COMO FUNCIONA -->
     <section class="section" id="como-funciona" aria-labelledby="como-titulo">
       <div class="wrap">
         <div class="section-head">
@@ -713,28 +946,34 @@ button { font: inherit; color: inherit; }
           <li class="step">
             <span class="step__n" aria-hidden="true">1</span>
             <h3>Escolha o plano</h3>
-            <p>Defina quantas TVs e por quanto tempo. O valor total aparece antes de você contratar.</p>
+            <p>Defina quantas TVs e por quanto tempo. O valor total aparece antes de contratar.</p>
           </li>
           <li class="step">
             <span class="step__n" aria-hidden="true">2</span>
             <h3>Faça o pagamento</h3>
-            <p>Conclua a contratação no checkout seguro da GMAX.</p>
+            <p>Conclua a contratação pelo checkout da GMAX.</p>
           </li>
           <li class="step">
             <span class="step__n" aria-hidden="true">3</span>
-            <h3>Receba seu acesso</h3>
-            <p>Você recebe as instruções de acesso e instalação. <span class="pending">a confirmar</span></p>
+            <h3>Receba as instruções</h3>
+            <p>Após a confirmação do pagamento, você recebe as orientações de acesso. <span class="pending">fluxo a confirmar</span></p>
           </li>
           <li class="step">
             <span class="step__n" aria-hidden="true">4</span>
-            <h3>Comece a assistir</h3>
-            <p>Instale o aplicativo, entre com seu acesso e aproveite. Dúvidas? O suporte atende pelo WhatsApp.</p>
+            <h3>Instale e assista</h3>
+            <p>Siga as instruções para instalar e configurar. Se precisar, a equipe ajuda pelo WhatsApp.</p>
           </li>
         </ol>
+        <p class="steps-help">
+          <button class="btn btn--ghost" type="button" data-wa="Olá! Quero informações sobre a instalação." data-origem="como_funciona">
+            <svg class="ico ico--wa" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+            Dúvidas sobre a instalação
+          </button>
+        </p>
       </div>
     </section>
 
-    <!-- GMAX PLAYER -->
+    <!-- 7. GMAX PLAYER -->
     <section class="section section--app" id="app" aria-labelledby="app-titulo">
       <div class="wrap app">
         <div class="app__visual" aria-hidden="true">
@@ -751,25 +990,32 @@ button { font: inherit; color: inherit; }
             </div>
             <div class="device__stand"></div>
           </div>
-          <p class="app__caption">Interface ilustrativa. Será substituída por capturas reais do app.</p>
+          <p class="app__caption">Interface demonstrativa. Será substituída por capturas reais do aplicativo.</p>
         </div>
 
         <div class="app__copy">
-          <p class="eyebrow">Aplicativo</p>
+          <p class="eyebrow">Aplicativo oficial</p>
           <h2 id="app-titulo">GMAX Player</h2>
           <p class="lead">Nosso aplicativo reprodutor para Android, disponível na Google Play.</p>
-          <a class="btn btn--light" href="https://play.google.com/store/apps/details?id=br.com.gmax.player" target="_blank" rel="noopener noreferrer" data-track="play_store_click" data-local="app">
-            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg>
-            Ver na Google Play
-          </a>
-          <p class="app__devices"><span class="pending">a confirmar</span> Dispositivos e versões do Android compatíveis serão listados conforme a ficha oficial da Google Play.</p>
+          <ol class="app__how">
+            <li><span>1</span>Instale o GMAX Player pela Google Play.</li>
+            <li><span>2</span>Abra o aplicativo no seu aparelho.</li>
+            <li><span>3</span>Configure conforme as instruções do seu serviço. <span class="pending">a confirmar</span></li>
+          </ol>
+          <div class="app__actions">
+            <a class="btn btn--light" href="https://play.google.com/store/apps/details?id=br.com.gmax.player" target="_blank" rel="noopener noreferrer" data-track="play_store_click" data-local="app">
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg>
+              Instalar pela Google Play
+            </a>
+          </div>
+          <p class="app__devices"><span class="pending">a confirmar</span> Recursos, aparelhos e versões do Android compatíveis serão listados conforme a ficha oficial da Google Play e os testes da GMAX.</p>
 
           <div class="compare">
             <div class="compare__col">
-              <h3 class="compare__h"><span>GMAX Player</span><small>aplicativo</small></h3>
+              <h3 class="compare__h"><span>GMAX Player</span><small>aplicativo reprodutor</small></h3>
               <ul>
-                <li>É um reprodutor de mídia.</li>
-                <li>Baixado pela Google Play.</li>
+                <li>Reproduz mídia no seu aparelho.</li>
+                <li>Instalado pela Google Play.</li>
                 <li>Não inclui filmes, séries ou canais.</li>
                 <li>Uso sujeito aos termos do aplicativo. <span class="pending">link a confirmar</span></li>
               </ul>
@@ -788,84 +1034,137 @@ button { font: inherit; color: inherit; }
       </div>
     </section>
 
-    <!-- DÚVIDAS -->
+    <!-- 10. AVALIAÇÕES (só aparece com avaliações reais e autorizadas) -->
+    <section class="section" id="avaliacoes" aria-labelledby="avaliacoes-titulo" hidden>
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Avaliações</p>
+          <h2 id="avaliacoes-titulo">O que dizem nossos clientes</h2>
+        </div>
+        <div class="reviews" id="reviews"></div>
+      </div>
+    </section>
+
+    <!-- 11. DÚVIDAS -->
     <section class="section" id="duvidas" aria-labelledby="faq-titulo">
       <div class="wrap faq-wrap">
         <div class="section-head">
           <p class="eyebrow">Dúvidas frequentes</p>
           <h2 id="faq-titulo">Perguntas e respostas</h2>
-          <p class="lead">Não achou sua dúvida? <button class="link" type="button" data-wa="Olá! Tenho uma dúvida que não encontrei no site." data-origem="faq">Pergunte no WhatsApp</button>.</p>
+          <p class="lead">Não achou sua dúvida? <button class="link" type="button" data-wa="Olá! Tenho uma dúvida que não encontrei no site da GMAX." data-origem="faq">Pergunte no WhatsApp</button>.</p>
         </div>
-        <div class="faq" id="faq">
-          <div class="faq__group">
-            <h3 class="faq__gt">Planos e pagamento</h3>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">Como faço para assinar?</button></h4>
-              <div class="faq__a"><div><p>Na seção Planos, escolha a quantidade de TVs e o período e toque em “Assinar”. Você verá o valor total antes de concluir.</p></div></div>
+        <div class="faq-col">
+          <div class="chips chips--faq" role="toolbar" aria-label="Filtrar perguntas por tema" id="faq-chips"></div>
+          <div class="faq" id="faq">
+            <div class="faq__group" data-tema="Planos e pagamentos">
+              <h3 class="faq__gt">Planos e pagamentos</h3>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Como faço para assinar?</button></h4>
+                <div class="faq__a"><div><p>Na seção Planos, escolha a quantidade de TVs e o período e toque em “Assinar”. O valor total aparece antes de concluir.</p></div></div>
+              </div>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Quais formas de pagamento são aceitas?</button></h4>
+                <div class="faq__a"><div><p><span class="pending">a confirmar</span> As formas de pagamento serão informadas conforme a configuração atual do checkout.</p></div></div>
+              </div>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Qual a vantagem dos planos mais longos?</button></h4>
+                <div class="faq__a"><div><p id="faq-economia">O valor equivalente por mês fica menor nos períodos mais longos. Compare os valores na seção Planos.</p></div></div>
+              </div>
             </div>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">Quais formas de pagamento são aceitas?</button></h4>
-              <div class="faq__a"><div><p><span class="pending">a confirmar</span> As formas de pagamento serão informadas aqui conforme o checkout atual.</p></div></div>
+            <div class="faq__group" data-tema="Instalação">
+              <h3 class="faq__gt">Instalação</h3>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Como faço a instalação?</button></h4>
+                <div class="faq__a"><div><p>Após a confirmação do pagamento, você recebe as orientações de acesso e instalação. <span class="pending">fluxo a confirmar</span> Precisa de ajuda? <button class="link" type="button" data-wa="Olá! Quero informações sobre a instalação." data-origem="faq_instalacao">Fale com o suporte</button>.</p></div></div>
+              </div>
             </div>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">Qual a vantagem dos planos mais longos?</button></h4>
-              <div class="faq__a"><div><p>O valor por mês cai. Com 1 TV, o mensal custa R$&nbsp;35, e o anual sai por R$&nbsp;300, o equivalente a R$&nbsp;25 por mês: R$&nbsp;120 a menos no ano.</p></div></div>
+            <div class="faq__group" data-tema="Dispositivos">
+              <h3 class="faq__gt">Dispositivos</h3>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Quantas TVs posso usar?</button></h4>
+                <div class="faq__a"><div><p>De 1 a 5, conforme o plano escolhido. O preço muda de acordo com a quantidade de TVs.</p></div></div>
+              </div>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Em quais aparelhos funciona?</button></h4>
+                <div class="faq__a"><div><p><span class="pending">a confirmar</span> A lista de aparelhos compatíveis será publicada conforme os testes da GMAX e a ficha oficial do aplicativo.</p></div></div>
+              </div>
             </div>
-          </div>
-          <div class="faq__group">
-            <h3 class="faq__gt">TVs e aplicativo</h3>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">Quantas TVs posso usar?</button></h4>
-              <div class="faq__a"><div><p>De 1 a 5, conforme o plano escolhido. O preço muda de acordo com a quantidade de TVs.</p></div></div>
+            <div class="faq__group" data-tema="Aplicativo">
+              <h3 class="faq__gt">Aplicativo</h3>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">O GMAX Player já vem com conteúdo?</button></h4>
+                <div class="faq__a"><div><p>Não. O GMAX Player é um aplicativo reprodutor. Os serviços de conteúdo têm condições próprias.</p></div></div>
+              </div>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Onde baixo o GMAX Player?</button></h4>
+                <div class="faq__a"><div><p>Na Google Play, pela página oficial do aplicativo. Use o botão “Instalar pela Google Play” na seção GMAX Player.</p></div></div>
+              </div>
             </div>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">O GMAX Player já vem com conteúdo?</button></h4>
-              <div class="faq__a"><div><p>Não. O GMAX Player é um aplicativo reprodutor. O conteúdo depende da assinatura de um plano GMAX, que tem condições próprias.</p></div></div>
+            <div class="faq__group" data-tema="Suporte">
+              <h3 class="faq__gt">Suporte</h3>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Como falo com o suporte?</button></h4>
+                <div class="faq__a"><div><p>Pelo WhatsApp <span class="nowrap" data-wa-exibicao>(31) 99002-9545</span>. <span class="pending">horário a confirmar</span></p></div></div>
+              </div>
             </div>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">Em quais aparelhos funciona?</button></h4>
-              <div class="faq__a"><div><p><span class="pending">a confirmar</span> A lista de aparelhos compatíveis será publicada conforme os testes e a ficha oficial do aplicativo.</p></div></div>
+            <div class="faq__group" data-tema="Teste">
+              <h3 class="faq__gt">Teste</h3>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Posso testar antes de assinar?</button></h4>
+                <div class="faq__a"><div><p><span class="pending">a confirmar</span> Fale com a nossa equipe e consulte as condições. <button class="link" type="button" data-wa="Olá! Quero informações sobre o teste." data-origem="faq_teste" data-track-extra="trial_request">Perguntar sobre o teste</button>.</p></div></div>
+              </div>
             </div>
-          </div>
-          <div class="faq__group">
-            <h3 class="faq__gt">Teste e suporte</h3>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">Posso testar antes de assinar?</button></h4>
-              <div class="faq__a"><div><p><span class="pending">a confirmar</span> Solicite pelo WhatsApp e nossa equipe informa as condições do teste.</p></div></div>
-            </div>
-            <div class="faq__item">
-              <h4><button class="faq__q" type="button" aria-expanded="false">Como funciona o suporte?</button></h4>
-              <div class="faq__a"><div><p>O atendimento é feito pelo WhatsApp <span class="nowrap" data-wa-exibicao>(31) 99002-9545</span>. <span class="pending">horário a confirmar</span></p></div></div>
+            <div class="faq__group" data-tema="Indicações">
+              <h3 class="faq__gt">Programa de indicações</h3>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Quem pode participar?</button></h4>
+                <div class="faq__a"><div><p>Clientes ativos da GMAX.</p></div></div>
+              </div>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Quando eu ganho o mês grátis?</button></h4>
+                <div class="faq__a"><div><p>Quando a pessoa indicada contrata um plano e o pagamento é confirmado. O benefício corresponde ao seu mês seguinte e é validado pela equipe GMAX.</p></div></div>
+              </div>
+              <div class="faq__item">
+                <h4><button class="faq__q" type="button" aria-expanded="false">Como faço para indicar?</button></h4>
+                <div class="faq__a"><div><p>Fale com a gente pelo WhatsApp e informe que deseja participar. <button class="link" type="button" data-wa="Olá! Sou cliente GMAX e quero participar da promoção de indicação. Como faço para indicar um amigo?" data-origem="faq_indicacao" data-track-extra="referral_click">Quero indicar um amigo</button>.</p></div></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CTA FINAL -->
+    <!-- 12. CONVERSÃO FINAL -->
     <section class="cta-final" aria-labelledby="cta-titulo">
       <div class="wrap cta-final__in">
+        <p class="cta-final__brand"><span class="brand__word">GMAX</span><span class="brand__sub">Canais, Filmes e Séries</span></p>
         <h2 id="cta-titulo">Pronto para começar?</h2>
-        <p>Escolha seu plano em menos de um minuto.</p>
+        <p>Escolha seu plano em menos de um minuto. Se tiver dúvidas, a nossa equipe responde pelo WhatsApp.</p>
         <div class="hero__actions">
-          <a class="btn btn--primary btn--lg" href="#planos" data-track="cta_click" data-local="final">Ver planos</a>
-          <button class="btn btn--ghost btn--lg" type="button" data-wa="Olá! Vim pelo site e quero assinar." data-origem="final">Falar no WhatsApp</button>
+          <a class="btn btn--primary btn--lg" href="#planos" data-track="cta_click" data-local="final">Conhecer os planos</a>
+          <button class="btn btn--ghost btn--lg" type="button" data-wa="Olá! Tenho interesse em conhecer os planos da GMAX." data-origem="final">
+            <svg class="ico ico--wa" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+            Falar no WhatsApp
+          </button>
         </div>
+        <p class="cta-final__support">Atendimento: WhatsApp <span class="nowrap" data-wa-exibicao>(31) 99002-9545</span></p>
       </div>
     </section>
   </main>
 
+  <!-- 13. RODAPÉ -->
   <footer class="footer">
     <div class="wrap footer__in">
       <div class="footer__brand">
-        <span class="brand__word">GMAX</span>
-        <p>Filmes, séries e canais em uma só assinatura.</p>
+        <p><span class="brand__word">GMAX</span><span class="brand__sub">Canais, Filmes e Séries</span></p>
+        <p>Canais, filmes e séries em uma só assinatura.</p>
       </div>
       <nav class="footer__nav" aria-label="Rodapé">
         <h2 class="footer__h">Navegação</h2>
         <ul>
           <li><a href="#conteudo">Conteúdo</a></li>
           <li><a href="#planos">Planos</a></li>
+          <li><a href="#indique">Indique e ganhe</a></li>
           <li><a href="#app">GMAX Player</a></li>
           <li><a href="#duvidas">Dúvidas</a></li>
         </ul>
@@ -880,31 +1179,31 @@ button { font: inherit; color: inherit; }
       <div class="footer__nav">
         <h2 class="footer__h">Legal</h2>
         <ul>
-          <li><a href="#" aria-disabled="true" data-pendente>Termos de uso</a></li>
-          <li><a href="#" aria-disabled="true" data-pendente>Política de privacidade</a></li>
-          <li><a href="#" aria-disabled="true" data-pendente>Cancelamento e reembolso</a></li>
+          <li><a href="#" data-pendente>Termos de uso</a></li>
+          <li><a href="#" data-pendente>Política de privacidade</a></li>
+          <li><a href="#" data-pendente>Política de reembolso</a></li>
         </ul>
       </div>
     </div>
     <div class="wrap footer__bottom">
-      <p>© <span id="ano">2026</span> GMAX. <span class="pending">CNPJ a informar</span></p>
+      <p>© <span id="ano">2026</span> GMAX. <span class="pending">razão social e CNPJ a informar</span></p>
       <p>Google Play é marca da Google LLC.</p>
     </div>
   </footer>
 
   <!-- WhatsApp: botão flutuante (computador) e barra fixa (celular) -->
-  <button class="wa-float" type="button" data-wa="Olá! Vim pelo site da GMAX." data-origem="flutuante" aria-label="Falar no WhatsApp">
+  <button class="wa-float" type="button" data-wa="Olá! Tenho interesse em conhecer os planos da GMAX." data-origem="flutuante" aria-label="Falar no WhatsApp">
     <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
   </button>
   <div class="mobile-bar" id="mobile-bar">
     <a class="btn btn--primary" href="#planos" data-track="cta_click" data-local="barra_movel">Ver planos</a>
-    <button class="btn btn--ghost mobile-bar__wa" type="button" data-wa="Olá! Vim pelo site da GMAX." data-origem="barra_movel" aria-label="Falar no WhatsApp">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span>
+    <button class="btn btn--ghost mobile-bar__wa" type="button" data-wa="Olá! Tenho interesse em conhecer os planos da GMAX." data-origem="barra_movel" aria-label="Falar no WhatsApp">
+      <svg class="ico ico--wa" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span>
     </button>
   </div>
 
-  <div class="consent" id="consent" hidden role="dialog" aria-labelledby="consent-t" aria-live="polite">
-    <p id="consent-t">Usamos cookies de medição para entender como a página é usada e melhorar sua experiência. <a href="#" data-pendente>Política de privacidade</a>.</p>
+  <div class="consent" id="consent" hidden role="region" aria-label="Aviso de cookies">
+    <p>Usamos cookies de medição para entender o uso da página e melhorar sua experiência. <a href="#" data-pendente>Política de privacidade</a>.</p>
     <div class="consent__actions">
       <button class="btn btn--ghost btn--sm" type="button" data-consent="nao">Recusar</button>
       <button class="btn btn--primary btn--sm" type="button" data-consent="sim">Aceitar</button>
@@ -918,9 +1217,11 @@ button { font: inherit; color: inherit; }
     <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 3.2a8.8 8.8 0 0 0-7.6 13.2L3.2 20.8l4.5-1.2A8.8 8.8 0 1 0 12 3.2Z"/><path d="M8.9 8.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.4 1.8 2.4 2.3.2.1.4.1.5 0l.7-.8c.2-.2.3-.2.6-.1l1.6.8c.3.1.4.2.4.4 0 .5-.2 1.1-.6 1.4-.5.4-1.2.6-2 .4-1.9-.5-4.2-2.4-5.2-4.4-.5-1-.6-2-.3-2.9Z" class="fill"/></symbol>
     <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 20h8"/></symbol>
     <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
-    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M5 3.5v17l14-8.5z"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="4" rx="1"/><path d="M5 13v7h14v-7M12 9v11M12 9c-1.6-3.4-5.6-4.6-6.2-2.4C5.3 8.4 8.4 9 12 9Zm0 0c1.6-3.4 5.6-4.6 6.2-2.4.5 1.8-2.6 2.4-6.2 2.4Z"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5z"/><path d="m3 12.5 9 5 9-5M3 16.5l9 5 9-5"/></symbol>
+    <symbol id="i-app" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 9.5v5l4-2.5z"/><path d="M11 18.5h2"/></symbol>
     <symbol id="c-esportes" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><path d="M24 15l7 5-2.7 8.2h-8.6L17 20zM24 7v8M31 20l8-3M28.3 28.2 33 36M19.7 28.2 15 36M17 20l-8-3"/></symbol>
     <symbol id="c-noticias" viewBox="0 0 48 48"><rect x="7" y="10" width="34" height="28" rx="3"/><path d="M13 17h14M13 23h22M13 29h22M31 15h4v5h-4z"/></symbol>
     <symbol id="c-filmes" viewBox="0 0 48 48"><rect x="7" y="16" width="34" height="23" rx="2"/><path d="m7 16 32-8 1.5 5.5L8.5 21.6M15 14l4 5M24 11.8l4 5M33 9.6l4 5"/></symbol>
@@ -971,14 +1272,20 @@ window.GMAX_CONFIG = Object.freeze({
 </script>
 <script>
 /*
- * Tabela comercial — VALORES DE REFERÊNCIA (enviados em 06/11/2026).
- * Confirmar a tabela vigente antes de integrar o checkout.
+ * Tabela comercial do protótipo.
  *
- * Fonte única dos preços: os cartões, a economia e o valor mensal equivalente
- * são calculados a partir daqui. Nunca escreva preço direto no HTML.
+ * ATENÇÃO: estes valores são a REFERÊNCIA HISTÓRICA enviada em 06/11/2026.
+ * A fonte oficial é a configuração comercial do site em produção.
+ * Antes da integração, substituir por esses dados, sem alterar nada, e
+ * mudar `status` para "validada". Enquanto o status não for "validada",
+ * a página mostra o aviso "Preços pendentes de validação".
+ *
+ * Fonte única dos preços: cartões, economia, valor mensal equivalente,
+ * destaque de melhor custo-benefício, hero e FAQ são calculados daqui.
+ * Nunca escreva preço direto no HTML.
  */
 window.GMAX_PLANOS = Object.freeze({
-  status: "referencia", // "referencia" | "confirmada"
+  status: "pendente-validacao", // "pendente-validacao" | "validada"
   periodos: [
     { id: "mensal",     nome: "Mensal",     meses: 1 },
     { id: "trimestral", nome: "Trimestral", meses: 3 },
@@ -993,7 +1300,7 @@ window.GMAX_PLANOS = Object.freeze({
     4: [120, 315, 560, 940],
     5: [150, 390, 685, 1125],
   },
-  padrao: { tvs: 1, destaque: "anual" },
+  tvsPadrao: 1,
 });
 
 </script>
@@ -1003,7 +1310,7 @@ window.GMAX_PLANOS = Object.freeze({
  *
  * REGRAS
  * - Só aparecem itens com `autorizado: true` (direito de divulgação confirmado).
- * - `ilustrativo: true` marca artes provisórias; a página exibe o selo "Ilustração".
+ * - `ilustrativo: true` marca artes provisórias; a página exibe o selo "Demonstrativo".
  * - Os títulos abaixo são FICTÍCIOS e as artes foram geradas por
  *   tools/gerar-ilustracoes.mjs a partir do campo `arte`. Substitua por
  *   materiais oficiais e autorizados antes da publicação.
@@ -1055,6 +1362,28 @@ window.GMAX_CATALOGO = Object.freeze({
 </script>
 <script>
 /*
+ * Avaliações de clientes.
+ *
+ * Somente avaliações REAIS, com autorização por escrito do cliente.
+ * Sem avaliações aqui, a seção não aparece no site
+ * (no modo protótipo, aparece um aviso de seção preparada).
+ *
+ * Formato:
+ * {
+ *   nome: "Maria S.",                 // como o cliente autorizou ser identificado
+ *   cidade: "Belo Horizonte/MG",      // opcional
+ *   texto: "…",                       // texto literal, sem edição de sentido
+ *   fonte: "WhatsApp" | "Google" | "Instagram",
+ *   link: "https://…",                // opcional: avaliação pública original
+ *   data: "2026-10",                  // mês/ano
+ *   autorizado: true                  // obrigatório
+ * }
+ */
+window.GMAX_AVALIACOES = Object.freeze([]);
+
+</script>
+<script>
+/*
  * GMAX — comportamento da landing page.
  * JavaScript puro, sem dependências. Todo texto vindo de dados é inserido
  * com textContent / atributos (nunca innerHTML), para evitar XSS.
@@ -1065,6 +1394,7 @@ window.GMAX_CATALOGO = Object.freeze({
   var CONFIG = window.GMAX_CONFIG || {};
   var PLANOS = window.GMAX_PLANOS;
   var CATALOGO = window.GMAX_CATALOGO || {};
+  var AVALIACOES = window.GMAX_AVALIACOES || [];
   var reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ------------------------------------------------------------------ */
@@ -1082,7 +1412,9 @@ window.GMAX_CATALOGO = Object.freeze({
         else n.setAttribute(k, attrs[k]);
       });
     }
-    (filhos || []).forEach(function (f) { if (f) n.appendChild(f); });
+    (filhos || []).forEach(function (f) {
+      if (f) n.appendChild(typeof f === "string" ? document.createTextNode(f) : f);
+    });
     return n;
   }
 
@@ -1098,15 +1430,24 @@ window.GMAX_CATALOGO = Object.freeze({
     return s;
   }
 
-  var brl = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  var brl2 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  function dinheiro(v) { return Number.isInteger(v) ? brl.format(v) : brl2.format(v); }
+  var fmt2 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function reais(v) { return "R$\u00a0" + fmt2.format(v); } // espaço não separável: "R$" nunca fica sozinho na linha
+  function tvsTexto(n) { return n + (n > 1 ? " TVs" : " TV"); }
+  function mesesTexto(n) { return n === 1 ? "1 mês" : n + " meses"; }
 
   function storage(chave, valor) {
     try {
       if (valor === undefined) return window.localStorage.getItem(chave);
       window.localStorage.setItem(chave, valor);
     } catch (e) { return null; }
+  }
+
+  /* Pausa animações contínuas quando o elemento sai da tela (economia de CPU/bateria). */
+  function pausarForaDaTela(no) {
+    if (!no || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(function (en) {
+      no.classList.toggle("is-paused", !en[0].isIntersecting);
+    }).observe(no);
   }
 
   /* ------------------------------------------------------------------ */
@@ -1117,10 +1458,9 @@ window.GMAX_CATALOGO = Object.freeze({
   window.dataLayer = window.dataLayer || [];
 
   function track(evento, params) {
-    var dados = Object.assign({ event: evento }, params || {});
     if (analytics.depurarNoConsole) console.info("[GMAX evento]", evento, params || {});
     if (analytics.exigirConsentimento && consentimento !== "sim") return;
-    window.dataLayer.push(dados);
+    window.dataLayer.push(Object.assign({ event: evento }, params || {}));
     if (typeof window.fbq === "function") window.fbq("trackCustom", evento, params || {});
   }
   window.GMAX_TRACK = track;
@@ -1128,13 +1468,14 @@ window.GMAX_CATALOGO = Object.freeze({
   function iniciarConsentimento() {
     var caixa = $("#consent");
     if (!caixa || !analytics.exigirConsentimento || consentimento) return;
-    // aparece só depois que o visitante começa a rolar (ou após 8 s),
-    // para não cobrir a primeira tela e os botões principais
+    // Aparece só depois que o visitante começa a rolar (ou após 8 s),
+    // para não cobrir a primeira tela nem os botões principais.
     var mostrado = false;
     function mostrar() {
       if (mostrado) return;
       mostrado = true;
       caixa.hidden = false;
+      document.body.classList.add("has-consent");
       window.removeEventListener("scroll", aoRolar);
     }
     function aoRolar() { if (window.scrollY > 320) mostrar(); }
@@ -1146,6 +1487,7 @@ window.GMAX_CATALOGO = Object.freeze({
       consentimento = b.getAttribute("data-consent");
       storage("gmax_consent", consentimento);
       caixa.hidden = true;
+      document.body.classList.remove("has-consent");
       track("consent_update", { consentimento: consentimento });
     });
   }
@@ -1159,25 +1501,25 @@ window.GMAX_CATALOGO = Object.freeze({
     if (!t) return;
     t.textContent = "";
     t.appendChild(el("strong", { text: titulo }));
-    if (detalhe) t.appendChild(el("code", { text: detalhe }));
+    if (detalhe) t.appendChild(el("span", { class: "toast__d", text: detalhe }));
     t.hidden = false;
-    t.style.animation = "none"; void t.offsetWidth; t.style.animation = "";
+    t.classList.remove("is-in"); void t.offsetWidth; t.classList.add("is-in");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.hidden = true; }, 4200);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 4500);
   }
 
   /* ------------------------------------------------------------------ */
   /* WhatsApp e contratação                                              */
   /* ------------------------------------------------------------------ */
   function linkWhatsApp(mensagem) {
-    var numero = (CONFIG.whatsapp && CONFIG.whatsapp.numero || "").replace(/\D/g, "");
+    var numero = String(CONFIG.whatsapp && CONFIG.whatsapp.numero || "").replace(/\D/g, "");
     return "https://wa.me/" + numero + "?text=" + encodeURIComponent(mensagem);
   }
 
   function abrirWhatsApp(mensagem, origem) {
     track("whatsapp_click", { origem: origem });
     if (CONFIG.modoPrototipo) {
-      aviso("Demonstração: WhatsApp", "Mensagem: “" + mensagem + "”");
+      aviso("Demonstração: WhatsApp " + (CONFIG.whatsapp ? CONFIG.whatsapp.exibicao : ""), "Mensagem: “" + mensagem + "”");
       return;
     }
     window.open(linkWhatsApp(mensagem), "_blank", "noopener");
@@ -1185,16 +1527,16 @@ window.GMAX_CATALOGO = Object.freeze({
 
   function contratar(plano) {
     var chave = plano.tvs + "-" + plano.periodo.id;
-    var params = { plano: chave, valor: plano.total, moeda: "BRL", tvs: plano.tvs, meses: plano.periodo.meses };
-    track("begin_checkout", params);
+    track("begin_checkout", { plano: chave, valor: plano.total, moeda: "BRL", tvs: plano.tvs, meses: plano.periodo.meses });
+    var resumo = plano.periodo.nome + " · " + tvsTexto(plano.tvs) + " · " + reais(plano.total);
     if (CONFIG.modoPrototipo) {
-      aviso("Checkout desativado no protótipo", plano.periodo.nome + " · " + plano.tvs + (plano.tvs > 1 ? " TVs" : " TV") + " · R$ " + dinheiro(plano.total));
+      aviso("Checkout desativado no protótipo", resumo);
       return;
     }
     var url = CONFIG.checkout && CONFIG.checkout[chave];
     if (url && /^https:\/\//.test(url)) { window.location.href = url; return; }
     // Sem link cadastrado: nunca deixa o visitante sem saída.
-    abrirWhatsApp("Olá! Quero assinar o plano " + plano.periodo.nome + " para " + plano.tvs + (plano.tvs > 1 ? " TVs" : " TV") + " (R$ " + dinheiro(plano.total) + ").", "plano_sem_link");
+    abrirWhatsApp("Olá! Tenho interesse no plano " + plano.periodo.nome + " para " + tvsTexto(plano.tvs) + " (" + reais(plano.total) + ").", "plano_sem_link");
   }
 
   function iniciarCliques() {
@@ -1215,24 +1557,27 @@ window.GMAX_CATALOGO = Object.freeze({
   }
 
   /* ------------------------------------------------------------------ */
-  /* Cabeçalho, menu e navegação                                         */
+  /* Cabeçalho, menu, barra móvel                                        */
   /* ------------------------------------------------------------------ */
   function iniciarCabecalho() {
     var header = $(".site-header");
     var barra = $("#mobile-bar");
     var hero = $(".hero");
-    var planos = $("#planos");
+    // a barra some onde a página já oferece o mesmo botão (evita CTA duplicado)
+    var zonasSemBarra = $$("#planos, #indique, .cta-final");
     var tick = false;
 
     function atualizar() {
       tick = false;
-      var y = window.scrollY;
+      var y = window.scrollY, vh = window.innerHeight;
       header.classList.toggle("is-solid", y > 24);
       if (barra && hero) {
         var passouHero = y > hero.offsetTop + hero.offsetHeight - 120;
-        var r = planos.getBoundingClientRect();
-        var vendoPlanos = r.top < window.innerHeight * 0.6 && r.bottom > window.innerHeight * 0.4;
-        barra.classList.toggle("is-visible", passouHero && !vendoPlanos);
+        var emZona = zonasSemBarra.some(function (z) {
+          var r = z.getBoundingClientRect();
+          return r.top < vh * 0.7 && r.bottom > vh * 0.3;
+        });
+        barra.classList.toggle("is-visible", passouHero && !emZona);
       }
     }
     window.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(atualizar); } }, { passive: true });
@@ -1253,17 +1598,20 @@ window.GMAX_CATALOGO = Object.freeze({
       menu.hidden = !abrir;
       if (abrir) { var a = $("a", menu); if (a) a.focus(); }
     });
-    menu.addEventListener("click", function (e) { if (e.target.closest("a")) fechar(false); });
+    menu.addEventListener("click", function (e) { if (e.target.closest("a, button")) fechar(false); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) fechar(true); });
     window.addEventListener("resize", function () { if (window.innerWidth >= 960 && !menu.hidden) fechar(false); });
 
-    // destaca o link da seção visível
     var links = $$(".nav__list a");
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (entradas) {
         entradas.forEach(function (en) {
           if (!en.isIntersecting) return;
-          links.forEach(function (l) { l.classList.toggle("is-active", l.getAttribute("href") === "#" + en.target.id); });
+          links.forEach(function (l) {
+            var ativo = l.getAttribute("href") === "#" + en.target.id;
+            l.classList.toggle("is-active", ativo);
+            if (ativo) l.setAttribute("aria-current", "true"); else l.removeAttribute("aria-current");
+          });
         });
       }, { rootMargin: "-45% 0px -50% 0px" });
       links.forEach(function (l) { var s = $(l.getAttribute("href")); if (s) io.observe(s); });
@@ -1277,24 +1625,49 @@ window.GMAX_CATALOGO = Object.freeze({
   }
 
   /* ------------------------------------------------------------------ */
-  /* Hero: parede de capas                                               */
+  /* Hero: parede de capas (computador) e faixa de capas (celular)       */
   /* ------------------------------------------------------------------ */
+  function capasAutorizadas() {
+    return (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(function (i) { return i.autorizado === true; });
+  }
+
   function iniciarHero() {
-    var alvo = $("#hero-cols");
-    if (!alvo) return;
-    var capas = (CATALOGO.filmes || []).concat(CATALOGO.series || []).filter(function (i) { return i.autorizado === true; });
+    var capas = capasAutorizadas();
     if (!capas.length) return;
-    var colunas = 4, porColuna = 6;
-    for (var c = 0; c < colunas; c++) {
-      var col = el("div", { class: "hero__col" });
-      var itens = [];
-      for (var k = 0; k < porColuna; k++) itens.push(capas[(c * 5 + k * 3) % capas.length]);
-      // duplica a sequência para o loop contínuo
-      itens.concat(itens).forEach(function (item) {
-        col.appendChild(el("img", { src: item.imagem, alt: "", width: "400", height: "600", decoding: "async", loading: c < 2 ? "eager" : "lazy" }));
-      });
-      alvo.appendChild(col);
+    var desktop = window.matchMedia("(min-width: 768px)");
+
+    function montarParede() {
+      var alvo = $("#hero-cols");
+      if (!alvo || alvo.childElementCount) return;
+      for (var c = 0; c < 3; c++) {
+        var col = el("div", { class: "hero__col" });
+        var itens = [];
+        for (var k = 0; k < 5; k++) itens.push(capas[(c * 7 + k * 3) % capas.length]);
+        itens.concat(itens).forEach(function (item, i) {
+          // as capas visíveis no topo carregam já (podem ser o LCP); o restante, sob demanda
+          col.appendChild(el("img", { src: item.imagem, alt: "", width: "400", height: "600", decoding: "async", loading: i < 3 ? "eager" : "lazy" }));
+        });
+        alvo.appendChild(col);
+      }
+      pausarForaDaTela($(".hero__wall"));
     }
+
+    function montarFaixa() {
+      var alvo = $("#hero-band");
+      if (!alvo || alvo.childElementCount) return;
+      var trilho = el("div", { class: "hero__band-track" });
+      var itens = capas.slice(0, 10);
+      itens.concat(itens).forEach(function (item, i) {
+        trilho.appendChild(el("img", { src: item.imagem, alt: "", width: "400", height: "600", decoding: "async", loading: "lazy" }));
+      });
+      alvo.appendChild(trilho);
+      pausarForaDaTela(alvo);
+    }
+
+    // só carrega as imagens da versão que está sendo exibida
+    function escolher() { if (desktop.matches) montarParede(); else montarFaixa(); }
+    escolher();
+    if (desktop.addEventListener) desktop.addEventListener("change", escolher);
   }
 
   /* ------------------------------------------------------------------ */
@@ -1315,7 +1688,9 @@ window.GMAX_CATALOGO = Object.freeze({
       self.track.scrollBy({ left: dir * self.track.clientWidth * 0.85, behavior: reduzMovimento ? "auto" : "smooth" });
       track("rail_nav", { vitrine: raiz.getAttribute("data-rail"), direcao: dir > 0 ? "proximo" : "anterior" });
     });
-    this.track.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(function () { tick = false; self.atualizar(); }); } }, { passive: true });
+    this.track.addEventListener("scroll", function () {
+      if (!tick) { tick = true; requestAnimationFrame(function () { tick = false; self.atualizar(); }); }
+    }, { passive: true });
     window.addEventListener("resize", function () { self.atualizar(); });
   }
   Carrossel.prototype.atualizar = function () {
@@ -1338,12 +1713,34 @@ window.GMAX_CATALOGO = Object.freeze({
     t.scrollLeft = 0;
     this.atualizar();
   };
+  Carrossel.prototype.animar = function () {
+    if (reduzMovimento) return;
+    var r = this.raiz;
+    r.classList.remove("is-in");
+    r.classList.add("will-animate");
+    requestAnimationFrame(function () { requestAnimationFrame(function () { r.classList.add("is-in"); }); });
+    setTimeout(function () { r.classList.remove("will-animate", "is-in"); }, 1400);
+  };
+
+  function imagemCapa(item) {
+    var img = el("img", {
+      src: item.imagem,
+      alt: (item.ilustrativo ? "Capa demonstrativa: " : "Capa: ") + item.titulo,
+      width: "400", height: "600", loading: "lazy", decoding: "async",
+    });
+    // Materiais oficiais: aceita AVIF/WebP com fallback (campo opcional `fontes`)
+    var f = item.fontes;
+    if (!f || (!f.avif && !f.webp)) return img;
+    return el("picture", null, [
+      f.avif ? el("source", { type: "image/avif", srcset: f.avif }) : null,
+      f.webp ? el("source", { type: "image/webp", srcset: f.webp }) : null,
+      img,
+    ]);
+  }
 
   function cartaoCapa(item) {
-    var frame = el("div", { class: "poster__frame" }, [
-      el("img", { src: item.imagem, alt: item.ilustrativo ? "Capa ilustrativa de " + item.titulo : "Capa de " + item.titulo, width: "400", height: "600", loading: "lazy", decoding: "async" }),
-    ]);
-    if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Ilustração" }));
+    var frame = el("div", { class: "poster__frame" }, [imagemCapa(item)]);
+    if (item.ilustrativo) frame.appendChild(el("span", { class: "poster__badge", text: "Demonstrativo" }));
     return el("li", null, [
       el("figure", { class: "poster" }, [
         frame,
@@ -1358,7 +1755,7 @@ window.GMAX_CATALOGO = Object.freeze({
   function cartaoCategoria(cat) {
     var card = el("div", { class: "cat" }, [
       icone("c-" + cat.icone, "cat__bg"),
-      icone("c-" + cat.icone, "cat__ico"),
+      el("span", { class: "cat__ico-wrap" }, [icone("c-" + cat.icone, "cat__ico")]),
       el("h4", { class: "cat__n", text: cat.nome }),
       el("p", { class: "cat__d", text: cat.descricao }),
     ]);
@@ -1366,18 +1763,29 @@ window.GMAX_CATALOGO = Object.freeze({
     return el("li", null, [card]);
   }
 
-  function animarEntrada(raiz) {
+  function animarAoEntrar(car) {
     if (reduzMovimento || !("IntersectionObserver" in window)) return;
-    // só anima o que ainda está abaixo da dobra: a primeira tela fica sempre completa
-    if (raiz.getBoundingClientRect().top < window.innerHeight) return;
-    raiz.classList.add("will-animate");
+    if (car.raiz.getBoundingClientRect().top < window.innerHeight) return; // primeira tela sempre completa
+    car.raiz.classList.add("will-animate");
     var io = new IntersectionObserver(function (en) {
       if (!en[0].isIntersecting) return;
-      raiz.classList.add("is-in");
       io.disconnect();
-      setTimeout(function () { raiz.classList.remove("will-animate", "is-in"); }, 1600);
+      car.raiz.classList.add("is-in");
+      setTimeout(function () { car.raiz.classList.remove("will-animate", "is-in"); }, 1600);
     }, { threshold: 0.2 });
-    io.observe(raiz);
+    io.observe(car.raiz);
+  }
+
+  function filtros(container, valores, rotuloTodos, aoEscolher) {
+    [""].concat(valores).forEach(function (v) {
+      container.appendChild(el("button", { class: "chip", type: "button", "aria-pressed": v === "" ? "true" : "false", "data-v": v, text: v || rotuloTodos }));
+    });
+    container.addEventListener("click", function (e) {
+      var b = e.target.closest(".chip");
+      if (!b || b.getAttribute("aria-pressed") === "true") return;
+      $$(".chip", container).forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
+      aoEscolher(b.getAttribute("data-v"));
+    });
   }
 
   function iniciarVitrines() {
@@ -1386,42 +1794,25 @@ window.GMAX_CATALOGO = Object.freeze({
       if (!raiz) return;
       var itens = (CATALOGO[tipo] || []).filter(function (i) { return i.autorizado === true; });
       var car = new Carrossel(raiz);
-      function render(genero) {
-        var lista = genero ? itens.filter(function (i) { return i.genero === genero; }) : itens;
-        if (!lista.length) { car.preencher([el("li", { class: "rail__empty", text: "Nenhum título nesta categoria por enquanto." })]); return; }
-        car.preencher(lista.map(cartaoCapa));
-        if (!reduzMovimento) {
-          car.raiz.classList.remove("is-in");
-          car.raiz.classList.add("will-animate");
-          requestAnimationFrame(function () { requestAnimationFrame(function () { car.raiz.classList.add("is-in"); }); });
-          setTimeout(function () { car.raiz.classList.remove("will-animate", "is-in"); }, 1400);
-        }
-      }
       car.preencher(itens.map(cartaoCapa));
-      animarEntrada(raiz);
+      animarAoEntrar(car);
 
-      // filtros por gênero, gerados a partir dos dados
       var chips = $('[data-chips="' + tipo + '"]');
-      if (chips && itens.length) {
-        var generos = itens.reduce(function (acc, i) { if (acc.indexOf(i.genero) < 0) acc.push(i.genero); return acc; }, []).sort();
-        [""].concat(generos).forEach(function (g) {
-          chips.appendChild(el("button", { class: "chip", type: "button", "aria-pressed": g === "" ? "true" : "false", "data-g": g, text: g || "Todos" }));
-        });
-        chips.addEventListener("click", function (e) {
-          var b = e.target.closest(".chip");
-          if (!b || b.getAttribute("aria-pressed") === "true") return;
-          $$(".chip", chips).forEach(function (c) { c.setAttribute("aria-pressed", String(c === b)); });
-          render(b.getAttribute("data-g"));
-          track("filtro_vitrine", { vitrine: tipo, genero: b.getAttribute("data-g") || "todos" });
-        });
-      }
+      if (!chips || !itens.length) return;
+      var generos = itens.reduce(function (acc, i) { if (acc.indexOf(i.genero) < 0) acc.push(i.genero); return acc; }, []).sort();
+      filtros(chips, generos, "Todos", function (g) {
+        var lista = g ? itens.filter(function (i) { return i.genero === g; }) : itens;
+        car.preencher(lista.length ? lista.map(cartaoCapa) : [el("li", { class: "rail__empty", text: "Nenhum título nesta categoria por enquanto." })]);
+        car.animar();
+        track("filtro_vitrine", { vitrine: tipo, genero: g || "todos" });
+      });
     });
 
     var raizCanais = $('.rail[data-rail="canais"]');
     if (raizCanais) {
       var car = new Carrossel(raizCanais);
       car.preencher((CATALOGO.canais || []).map(cartaoCategoria));
-      animarEntrada(raizCanais);
+      animarAoEntrar(car);
     }
   }
 
@@ -1437,89 +1828,104 @@ window.GMAX_CATALOGO = Object.freeze({
       var economia = Math.max(0, semDesconto - total);
       return {
         tvs: tvs, periodo: p, total: total,
-        porMes: total / p.meses,
+        porMes: Math.round((total / p.meses) * 100) / 100,
         economia: economia,
         economiaPct: semDesconto ? Math.round((economia / semDesconto) * 100) : 0,
       };
     });
   }
 
+  /* Melhor custo-benefício = maior % de economia (calculado, não fixo). */
+  function melhorPlano(lista) {
+    return lista.reduce(function (m, p) { return p.economiaPct > m.economiaPct ? p : m; }, lista[0]);
+  }
+
+  function preco(v) {
+    var partes = fmt2.format(v).split(",");
+    return [el("span", { class: "plan__cur", text: "R$" }), el("span", { class: "plan__val", text: partes[0] }), el("span", { class: "plan__cents", text: "," + partes[1] })];
+  }
+
   function iniciarPlanos() {
     var grade = $("#plan-grid"), seletor = $("#tv-picker"), telas = $("#tv-screens");
     if (!grade || !PLANOS) return;
+
+    var status = $("#planos-status");
+    if (status && PLANOS.status !== "validada") {
+      status.hidden = false;
+      status.appendChild(el("span", { class: "pending", text: "pendente de validação" }));
+      status.appendChild(document.createTextNode(" Valores de referência. Serão conferidos com a configuração atual do site antes da publicação."));
+    }
+
     var qtds = Object.keys(PLANOS.precos).map(Number).sort(function (a, b) { return a - b; });
-    var tvsAtual = PLANOS.padrao.tvs;
+    var tvsAtual = PLANOS.tvsPadrao || qtds[0];
     var cartoes = {};
 
     qtds.forEach(function (n) {
       var id = "tvs-" + n;
       seletor.appendChild(el("div", { class: "tv-opt" }, [
         el("input", { type: "radio", name: "tvs", id: id, value: String(n) }),
-        el("label", { for: id }, [document.createTextNode(String(n)), el("span", { class: "sr-only", text: n > 1 ? " TVs" : " TV" })]),
+        el("label", { for: id }, [String(n), el("span", { class: "sr-only", text: n > 1 ? " TVs" : " TV" })]),
       ]));
       telas.appendChild(el("span", { class: "tv-screen" }));
     });
-    var radioPadrao = $("#tvs-" + tvsAtual);
-    if (radioPadrao) radioPadrao.checked = true;
+    var radio = $("#tvs-" + tvsAtual);
+    if (radio) radio.checked = true;
 
     PLANOS.periodos.forEach(function (p) {
-      var destaque = p.id === PLANOS.padrao.destaque;
-      var refs = {
-        val: el("span", { class: "plan__val" }),
+      var r = {
+        flag: el("span", { class: "plan__flag", text: "Melhor custo-benefício" }),
+        price: el("p", { class: "plan__price" }),
+        per: el("p", { class: "plan__per" }),
         eq: el("p", { class: "plan__eq" }),
         save: el("span", { class: "plan__save" }),
         tvs: el("span"),
-        btn: el("button", { class: "btn btn--block " + (destaque ? "btn--primary" : "btn--ghost"), type: "button", text: "Assinar " + p.nome }),
+        btn: el("button", { class: "btn btn--block btn--ghost", type: "button", text: "Assinar " + p.nome }),
       };
-      var art = el("article", { class: "plan" + (destaque ? " plan--best" : ""), "aria-label": "Plano " + p.nome }, [
-        destaque ? el("span", { class: "plan__flag", text: "Maior economia" }) : null,
+      r.art = el("article", { class: "plan", "aria-label": "Plano " + p.nome }, [
+        r.flag,
         el("div", { class: "plan__head" }, [
           el("h3", { class: "plan__name", text: p.nome }),
-          el("span", { class: "plan__period", text: p.meses === 1 ? "1 mês" : p.meses + " meses" }),
+          el("span", { class: "plan__period", text: mesesTexto(p.meses) }),
         ]),
-        el("div", null, [
-          el("p", { class: "plan__price" }, [el("span", { class: "plan__cur", text: "R$" }), refs.val]),
-          refs.eq,
-        ]),
-        refs.save,
+        el("div", { class: "plan__pricebox" }, [r.price, r.per, r.eq]),
+        r.save,
         el("ul", { class: "plan__list" }, [
-          el("li", null, [icone("i-tv"), refs.tvs]),
-          el("li", null, [icone("i-cal"), el("span", { text: "Acesso por " + (p.meses === 1 ? "1 mês" : p.meses + " meses") })]),
-          el("li", null, [icone("i-chat"), el("span", { text: "Suporte pelo WhatsApp" })]),
+          el("li", null, [icone("i-tv"), r.tvs]),
+          el("li", null, [icone("i-cal"), el("span", { text: "Acesso por " + mesesTexto(p.meses) })]),
+          el("li", null, [icone("i-chat"), el("span", { text: "Atendimento pelo WhatsApp" })]),
         ]),
-        refs.btn,
+        r.btn,
       ]);
-      refs.art = art;
-      cartoes[p.id] = refs;
-      grade.appendChild(art);
+      cartoes[p.id] = r;
+      grade.appendChild(r.art);
     });
 
     function render(tvs, animar) {
       tvsAtual = tvs;
       $$(".tv-screen", telas).forEach(function (t, i) { t.classList.toggle("is-on", i < tvs); });
-      calcularPlanos(tvs).forEach(function (pl) {
-        var r = cartoes[pl.periodo.id];
-        r.val.textContent = dinheiro(pl.total);
-        r.eq.textContent = "";
-        if (pl.periodo.meses === 1) {
-          r.eq.appendChild(document.createTextNode("Pago mês a mês"));
-        } else {
-          r.eq.appendChild(document.createTextNode("Equivale a "));
-          r.eq.appendChild(el("strong", { text: "R$ " + brl2.format(pl.porMes) + "/mês" }));
-        }
+      var lista = calcularPlanos(tvs), melhor = melhorPlano(lista);
+      lista.forEach(function (pl) {
+        var r = cartoes[pl.periodo.id], destaque = pl === melhor && pl.economia > 0;
+        r.art.classList.toggle("plan--best", destaque);
+        r.flag.hidden = !destaque;
+        r.btn.className = "btn btn--block " + (destaque ? "btn--primary" : "btn--ghost");
+        r.price.textContent = "";
+        preco(pl.total).forEach(function (n) { r.price.appendChild(n); });
+        r.per.textContent = "por " + mesesTexto(pl.periodo.meses) + " · " + tvsTexto(tvs);
+        r.eq.textContent = pl.periodo.meses === 1
+          ? "Base para o cálculo da economia"
+          : "Equivale a " + reais(pl.porMes) + "/mês, em pagamento único";
         if (pl.economia > 0) {
           r.save.className = "plan__save";
-          r.save.textContent = "Economize R$ " + dinheiro(pl.economia) + " (" + pl.economiaPct + "%)";
+          r.save.textContent = "Economia de " + reais(pl.economia) + " (" + pl.economiaPct + "%)";
         } else {
           r.save.className = "plan__save plan__save--none";
-          r.save.textContent = "Sem desconto por período";
+          r.save.textContent = "Pagamento mês a mês";
         }
-        r.tvs.textContent = "Para " + tvs + (tvs > 1 ? " TVs" : " TV");
+        r.tvs.textContent = "Para " + tvsTexto(tvs);
         r.btn.onclick = function () { contratar(pl); };
-        r.btn.setAttribute("aria-label", "Assinar plano " + pl.periodo.nome + " para " + tvs + (tvs > 1 ? " TVs" : " TV") + ", R$ " + dinheiro(pl.total));
-        if (animar && !reduzMovimento) {
-          r.art.classList.remove("is-updating"); void r.art.offsetWidth; r.art.classList.add("is-updating");
-        }
+        r.btn.setAttribute("aria-label", "Assinar plano " + pl.periodo.nome + " para " + tvsTexto(tvs) + ", " + reais(pl.total) + " por " + mesesTexto(pl.periodo.meses));
+        if (animar && !reduzMovimento) { r.art.classList.remove("is-updating"); void r.art.offsetWidth; r.art.classList.add("is-updating"); }
       });
     }
 
@@ -1530,12 +1936,75 @@ window.GMAX_CATALOGO = Object.freeze({
     });
     render(tvsAtual, false);
 
-    // "view_plans" uma vez, quando a seção aparece
+    // Textos derivados da tabela (hero e FAQ): mudam sozinhos com os preços oficiais.
+    var base = calcularPlanos(qtds[0]), menor = melhorPlano(base), mensal = base[0];
+    var heroPreco = $("#hero-preco");
+    if (heroPreco && menor.economia > 0) {
+      heroPreco.appendChild(document.createTextNode("No plano " + menor.periodo.nome.toLowerCase() + " de " + tvsTexto(qtds[0]) + ", equivale a "));
+      heroPreco.appendChild(el("strong", { text: reais(menor.porMes) + "/mês" }));
+      heroPreco.appendChild(document.createTextNode("."));
+    }
+    var faq = $("#faq-economia");
+    if (faq && menor.economia > 0) {
+      faq.textContent = "O valor equivalente por mês fica menor. Com " + tvsTexto(qtds[0]) + ", o mensal custa " + reais(mensal.total) +
+        " e o " + menor.periodo.nome.toLowerCase() + " sai por " + reais(menor.total) + " (" + reais(menor.porMes) + "/mês em pagamento único), uma economia de " +
+        reais(menor.economia) + " no período.";
+    }
+
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (en) {
         if (en[0].isIntersecting) { track("view_plans", {}); io.disconnect(); }
       }, { threshold: 0.35 });
       io.observe($("#planos"));
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Indicações                                                          */
+  /* ------------------------------------------------------------------ */
+  function iniciarIndicacoes() {
+    var regras = $("#ref-regras");
+    if (!regras) return;
+    // regras abertas no computador; recolhidas no celular para não alongar a página
+    if (window.matchMedia("(min-width: 768px)").matches) regras.open = true;
+    regras.addEventListener("toggle", function () { if (regras.open) track("referral_rules_open", {}); });
+    pausarForaDaTela($(".ref__art"));
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (en) {
+        if (en[0].isIntersecting) { track("view_referral", {}); io.disconnect(); }
+      }, { threshold: 0.4 });
+      io.observe($("#indique"));
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Avaliações (somente reais e autorizadas)                            */
+  /* ------------------------------------------------------------------ */
+  function iniciarAvaliacoes() {
+    var secao = $("#avaliacoes"), lista = $("#reviews");
+    if (!secao || !lista) return;
+    var validas = AVALIACOES.filter(function (a) { return a && a.autorizado === true && a.texto && a.nome; });
+    if (validas.length) {
+      validas.forEach(function (a) {
+        var rodape = el("figcaption", { class: "review__by" }, [
+          el("strong", { text: a.nome }),
+          a.cidade ? el("span", { text: a.cidade }) : null,
+        ]);
+        if (a.fonte) {
+          var fonte = /^https:\/\//.test(a.link || "")
+            ? el("a", { href: a.link, target: "_blank", rel: "noopener noreferrer nofollow", text: "via " + a.fonte })
+            : el("span", { text: "via " + a.fonte });
+          rodape.appendChild(fonte);
+        }
+        lista.appendChild(el("figure", { class: "review" }, [el("blockquote", null, [el("p", { text: a.texto })]), rodape]));
+      });
+      secao.hidden = false;
+    } else if (CONFIG.modoPrototipo) {
+      lista.appendChild(el("div", { class: "reviews__empty" }, [
+        el("span", { class: "pending", text: "seção preparada" }),
+        el("p", { text: "Esta seção só é publicada com avaliações reais e autorizadas pelos clientes. Sem avaliações cadastradas, ela fica oculta no site." }),
+      ]));
+      secao.hidden = false;
     }
   }
 
@@ -1547,12 +2016,11 @@ window.GMAX_CATALOGO = Object.freeze({
     if (!raiz) return;
     $$(".faq__item", raiz).forEach(function (item, i) {
       var q = $(".faq__q", item), a = $(".faq__a", item);
-      var id = "faq-a-" + i;
-      a.id = id;
-      a.setAttribute("role", "region");
-      a.setAttribute("aria-labelledby", "faq-q-" + i);
+      a.id = "faq-a-" + i;
       q.id = "faq-q-" + i;
-      q.setAttribute("aria-controls", id);
+      a.setAttribute("role", "region");
+      a.setAttribute("aria-labelledby", q.id);
+      q.setAttribute("aria-controls", a.id);
       a.inert = true;
     });
     raiz.addEventListener("click", function (e) {
@@ -1564,6 +2032,16 @@ window.GMAX_CATALOGO = Object.freeze({
       $(".faq__a", item).inert = !abrir;
       if (abrir) track("faq_open", { pergunta: q.textContent.trim() });
     });
+
+    var chips = $("#faq-chips"), grupos = $$(".faq__group", raiz);
+    if (chips && grupos.length) {
+      var temas = grupos.map(function (g) { return g.getAttribute("data-tema"); });
+      filtros(chips, temas, "Todas", function (tema) {
+        grupos.forEach(function (g) { g.hidden = !!tema && g.getAttribute("data-tema") !== tema; });
+        raiz.classList.toggle("is-filtered", !!tema);
+        track("faq_filtro", { tema: tema || "todas" });
+      });
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -1571,7 +2049,7 @@ window.GMAX_CATALOGO = Object.freeze({
   /* ------------------------------------------------------------------ */
   function iniciarRevelacao() {
     if (reduzMovimento || !("IntersectionObserver" in window)) return;
-    var alvos = $$(".section-head, .plan-grid, .step, .app__visual, .app__copy, .faq__group, .cta-final__in");
+    var alvos = $$(".benefit, .section-head, .plan-grid, .ref, .step, .app__visual, .app__copy, .faq-col, .cta-final__in");
     var io = new IntersectionObserver(function (en) {
       en.forEach(function (x) {
         if (!x.isIntersecting) return;
@@ -1579,9 +2057,11 @@ window.GMAX_CATALOGO = Object.freeze({
         io.unobserve(x.target);
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
-    alvos.forEach(function (n, i) {
+    alvos.forEach(function (n) {
       if (n.getBoundingClientRect().top < window.innerHeight) return;
-      if (n.classList.contains("step")) n.style.transitionDelay = (i % 4) * 80 + "ms";
+      if (n.classList.contains("step") || n.classList.contains("benefit")) {
+        n.style.transitionDelay = (Array.prototype.indexOf.call(n.parentNode.children, n) % 4) * 80 + "ms";
+      }
       n.classList.add("reveal");
       io.observe(n);
     });
@@ -1596,6 +2076,8 @@ window.GMAX_CATALOGO = Object.freeze({
     iniciarHero();
     iniciarVitrines();
     iniciarPlanos();
+    iniciarIndicacoes();
+    iniciarAvaliacoes();
     iniciarFaq();
     iniciarRevelacao();
     iniciarConsentimento();
